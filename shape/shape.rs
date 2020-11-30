@@ -6,6 +6,7 @@ pub trait Shape {
     fn move_to(&mut self, point: Point);
     fn rotate(&mut self, theta: Angle);
     fn rotate_to(&mut self, phi: Angle);
+    fn rotate_about(&mut self, point: Point, theta: Angle);
     fn to_polygon(&self) -> Polygon;
     //fn to_bounding_box(&self) -> Box;
     //fn to_enclosing_circle(&self) -> Circle;

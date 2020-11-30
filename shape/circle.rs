@@ -26,6 +26,9 @@ impl Shape for Circle {
     fn rotate_to(&mut self, _phi: Angle) {
         // does nothing
     }
+    fn rotate_about(&mut self, point: Point, theta: Angle) {
+        self.center.rotate_about(point, theta);
+    }
     fn to_polygon(&self) -> Polygon {
         // determine number of polygon vertices from radius
         let n_vertices = 4 + (4.0 * self.radius.sqrt().floor()) as usize;

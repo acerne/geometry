@@ -27,6 +27,10 @@ impl Shape for Hexagon {
     fn rotate_to(&mut self, phi: Angle) {
         self.phi = phi;
     }
+    fn rotate_about(&mut self, point: Point, theta: Angle) {
+        self.center.rotate_about(point, theta);
+        self.phi = self.phi + theta;
+    }
     fn to_polygon(&self) -> Polygon {
         let mut vertices = Vec::new();
         vertices.reserve(6);
