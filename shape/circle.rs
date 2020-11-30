@@ -1,4 +1,4 @@
-use crate::geometry::base::{Point, Vector};
+use crate::geometry::base::{Angle, Point, Vector};
 use crate::geometry::shape::{shape::Shape, Polygon};
 use float_eq::FloatEq;
 
@@ -20,10 +20,10 @@ impl Shape for Circle {
     fn move_to(&mut self, point: Point) {
         self.center = point;
     }
-    fn rotate(&mut self, _theta: f32) {
+    fn rotate(&mut self, _theta: Angle) {
         // does nothing
     }
-    fn rotate_to(&mut self, _phi: f32) {
+    fn rotate_to(&mut self, _phi: Angle) {
         // does nothing
     }
     fn to_polygon(&self) -> Polygon {

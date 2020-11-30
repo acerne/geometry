@@ -1,15 +1,15 @@
-use crate::geometry::base::{Point, Scale, Size, Vector};
+use crate::geometry::base::{Angle, Point, Scale, Size, Vector};
 use crate::geometry::shape::{shape::Shape, Polygon};
 use float_eq::FloatEq;
 
 pub struct Rectangle {
     center: Point,
     size: Size,
-    phi: f32,
+    phi: Angle,
 }
 
 impl Rectangle {
-    pub fn new(center: Point, size: Size, phi: f32) -> Self {
+    pub fn new(center: Point, size: Size, phi: Angle) -> Self {
         Self { center, size, phi }
     }
     pub fn resize(&mut self, scale: Scale) {
@@ -27,24 +27,24 @@ impl Shape for Rectangle {
     fn move_to(&mut self, point: Point) {
         self.center = point;
     }
-    fn rotate(&mut self, theta: f32) {
-        self.phi += theta;
+    fn rotate(&mut self, theta: Angle) {
+        self.phi = self.phi + theta;
     }
-    fn rotate_to(&mut self, phi: f32) {
+    fn rotate_to(&mut self, phi: Angle) {
         self.phi = phi;
     }
     fn to_polygon(&self) -> Polygon {
         let mut vertices = Vec::new();
         vertices.reserve(4);
         let half_size = self.size / 2.0;
-        let w_cos = half_size.w * self.phi.cos();
-        let w_sin = half_size.w * self.phi.sin();
-        let h_cos = half_size.h * self.phi.cos();
-        let h_sin = half_size.h * self.phi.sin();
-        vertices.push(self.center + Vector::new(-w_cos + h_sin, -w_sin - h_cos)); // (-x, -y)
-        vertices.push(self.center + Vector::new(w_cos + h_sin, w_sin - h_cos)); // (x, -y)
-        vertices.push(self.center + Vector::new(w_cos - h_sin, w_sin + h_cos)); // (x, y)
-        vertices.push(self.center + Vector::new(-w_cos - h_sin, -w_sin + h_cos)); // (-x, y)
+        let w_cos = half_size.w * self.phi.cos() as f32;
+        let w_sin = half_size.w * self.phi.sin() as f32;
+        let h_cos = half_size.h * self.phi.cos() as f32;
+        let h_sin = half_size.h * self.phi.sin() as f32;
+        vertices.push(self.center + Vector::new(-w_cos + h_sin, -w_sin - h_cos));
+        vertices.push(self.center + Vector::new(w_cos + h_sin, w_sin - h_cos));
+        vertices.push(self.center + Vector::new(w_cos - h_sin, w_sin + h_cos));
+        vertices.push(self.center + Vector::new(-w_cos - h_sin, -w_sin + h_cos));
         Polygon { vertices }
     }
 }
@@ -69,7 +69,7 @@ impl std::fmt::Debug for Rectangle {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Point, Size, Vector};
+    use crate::geometry::base::{Angle, Point, Size, Vector};
     use crate::geometry::shape::{shape::Shape, Rectangle};
     use float_eq::FloatEq;
     #[test]
@@ -78,13 +78,13 @@ mod tests {
         let mut rect = Rectangle::new(
             Point::new(10.0, -5.0),
             Size::new(2.0, 1.0),
-            45f32.to_radians(),
+            Angle::new(45f64),
         );
         rect.translate(Vector::new(-2.0, 1.0));
         let expected = Rectangle::new(
             Point::new(8.0, -4.0),
             Size::new(2.0, 1.0),
-            45f32.to_radians(),
+            Angle::new(45f64),
         );
         assert_eq!(rect, expected);
     }
@@ -94,35 +94,31 @@ mod tests {
         let mut rect = Rectangle::new(
             Point::new(10.0, -5.0),
             Size::new(2.0, 1.0),
-            45f32.to_radians(),
+            Angle::new(45f64),
         );
         rect.move_to(Point::new(-2.0, 1.0));
         let expected = Rectangle::new(
             Point::new(-2.0, 1.0),
             Size::new(2.0, 1.0),
-            45f32.to_radians(),
+            Angle::new(45f64),
         );
         assert_eq!(rect, expected);
     }
     #[test]
     fn test_rotate() {
-        let mut rect = Rectangle::new(
-            Point::new(10.0, -5.0),
-            Size::new(2.0, 1.0),
-            0f32.to_radians(),
-        );
-        rect.rotate(45f32.to_radians());
+        let mut rect = Rectangle::new(Point::new(10.0, -5.0), Size::new(2.0, 1.0), Angle::zero());
+        rect.rotate(Angle::new(45f64));
         let expected = Rectangle::new(
             Point::new(10.0, -5.0),
             Size::new(2.0, 1.0),
-            45f32.to_radians(),
+            Angle::new(45f64),
         );
         assert_eq!(rect, expected);
     }
     #[test]
     fn test_to_polygon_axis_aligned() {
         // test axis aligned rectangle
-        let rect = Rectangle::new(Point::new(10.0, -5.0), Size::new(4.0, 2.0), 0.0);
+        let rect = Rectangle::new(Point::new(10.0, -5.0), Size::new(4.0, 2.0), Angle::zero());
         let poly = rect.to_polygon();
         let vert_a = Point::new(8.0, -6.0);
         let vert_b = Point::new(12.0, -6.0);
@@ -147,7 +143,7 @@ mod tests {
         let rect = Rectangle::new(
             Point::new(10.0, -5.0),
             Size::new(4.0, 2.0),
-            90f32.to_radians(),
+            Angle::new(90f64),
         );
         let poly = rect.to_polygon();
         let vert_a = Point::new(11.0, -7.0);
@@ -167,13 +163,14 @@ mod tests {
             vert_d
         );
     }
+    
     #[test]
     fn test_to_polygon_oriented() {
         // test oriented rectangle
         let rect = Rectangle::new(
             Point::new(10.0, -5.0),
             Size::new(2.0 / 2f32.sqrt(), 2.0 / 2f32.sqrt()),
-            45f32.to_radians(),
+            Angle::new(45f64),
         );
         let poly = rect.to_polygon();
         let vert_a = Point::new(10.0, -6.0);
