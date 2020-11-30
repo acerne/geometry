@@ -1,6 +1,6 @@
 use float_eq::FloatEq;
 
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Angle {
     deg: f64,
 }
@@ -29,23 +29,8 @@ impl Angle {
     pub fn sin(&self) -> f64 {
         self.deg.to_radians().sin()
     }
-    pub fn asin(&self) -> f64 {
-        self.deg.to_radians().asin()
-    }
     pub fn cos(&self) -> f64 {
         self.deg.to_radians().cos()
-    }
-    pub fn acos(&self) -> f64 {
-        self.deg.to_radians().acos()
-    }
-    pub fn tan(&self) -> f64 {
-        self.deg.to_radians().tan()
-    }
-    pub fn atan(&self) -> f64 {
-        self.deg.to_radians().atan()
-    }
-    pub fn atan2(&self, deg: Angle) -> f64 {
-        self.deg.to_radians().atan2(deg.to_rad64())
     }
 }
 
@@ -114,5 +99,11 @@ impl FloatEq for Angle {
 
     fn eq_ulps(&self, other: &Self, max_diff: &float_eq::UlpsEpsilon<f64>) -> bool {
         self.deg.eq_ulps(&other.deg, max_diff)
+    }
+}
+
+impl std::fmt::Display for Angle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}°)", self.deg)
     }
 }

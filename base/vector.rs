@@ -1,4 +1,4 @@
-use crate::geometry::base::Point;
+use crate::geometry::base::{Angle, Point};
 use float_eq::FloatEq;
 
 pub struct Vector {
@@ -21,9 +21,9 @@ impl Vector {
         }
     }
     pub fn normalize(&mut self) {
-        let len = self.get_length();
-        self.dx = self.dx / len;
-        self.dy = self.dy / len;
+        let mag = self.get_magnitude();
+        self.dx = self.dx / mag;
+        self.dy = self.dy / mag;
     }
     pub fn rotate(&mut self, phi: f32) {
         let x1 = self.dx;
@@ -37,11 +37,22 @@ impl Vector {
     pub fn cross(self, other: Self) -> f32 {
         self.dx * other.dy - self.dy * other.dx
     }
-    pub fn get_length(&self) -> f32 {
+    pub fn get_magnitude(&self) -> f32 {
         (self.dx.powf(2.0) + self.dy.powf(2.0)).sqrt()
     }
-    pub fn get_orientation(&self) -> f32 {
-        self.dy.atan2(self.dx)
+    pub fn get_direction(&self) -> Angle {
+        let rad = self.dy.atan2(self.dx);
+        Angle::new((rad as f64).to_degrees())
+    }
+    pub fn get_normal_vector(&self) -> Vector {
+        Vector {
+            dx: -self.dy,
+            dy: self.dx,
+        }
+    }
+    pub fn get_unit_vector(self) -> Vector {
+        let mag = self.get_magnitude();
+        self / mag
     }
 }
 
@@ -177,7 +188,7 @@ impl std::fmt::Display for Vector {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::Vector;
+    use crate::geometry::base::{Angle, Vector};
     use float_eq::FloatEq;
 
     #[test]
@@ -219,15 +230,21 @@ mod tests {
         assert_eq!(result, 28f32);
     }
     #[test]
-    fn test_length() {
+    fn test_get_magnitude() {
         let vector_a = Vector::new(1.0, -1.0);
-        let result = vector_a.get_length();
+        let result = vector_a.get_magnitude();
         assert_eq!(result, 2f32.sqrt());
     }
     #[test]
-    fn test_orientation() {
+    fn test_get_orientatio() {
         let vector_a = Vector::new(1.0, -1.0);
-        let result = vector_a.get_orientation();
-        assert_eq!(result, -45f32.to_radians());
+        let result = vector_a.get_direction();
+        let expected = Angle::new(-45f64);
+        assert!(
+            result.eq_abs(&expected, &10e-6),
+            "{} == {}",
+            result,
+            expected
+        );
     }
 }
