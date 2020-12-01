@@ -24,6 +24,12 @@ impl Point {
         self.x = xo * cos - yo * sin + point.x;
         self.y = xo * sin + yo * cos + point.y;
     }
+    pub fn to_vector(self) -> Vector {
+        Vector {
+            dx: self.x,
+            dy: self.y,
+        }
+    }
 }
 
 impl Copy for Point {}

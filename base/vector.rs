@@ -1,4 +1,4 @@
-use crate::geometry::base::{Angle, Point};
+use crate::geometry::base::{Angle, Point, Scale, Size};
 use float_eq::FloatEq;
 
 pub struct Vector {
@@ -53,6 +53,24 @@ impl Vector {
     pub fn get_unit_vector(self) -> Vector {
         let mag = self.get_magnitude();
         self / mag
+    }
+    pub fn to_point(self) -> Point {
+        Point {
+            x: self.dx,
+            y: self.dy,
+        }
+    }
+    pub fn to_size(self) -> Size {
+        Size {
+            w: self.dx,
+            h: self.dy,
+        }
+    }
+    pub fn to_scale(self) -> Scale {
+        Scale {
+            sx: self.dx,
+            sy: self.dy,
+        }
     }
 }
 

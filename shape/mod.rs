@@ -7,4 +7,4 @@ mod circle;
 mod hexagon;
 mod polygon;
 mod rectangle;
-mod shape;
+pub mod shape;

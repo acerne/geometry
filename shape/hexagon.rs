@@ -9,7 +9,7 @@ pub struct Hexagon {
 }
 
 impl Hexagon {
-    fn new(center: Point, side: f32, phi: Angle) -> Self {
+    pub fn new(center: Point, side: f32, phi: Angle) -> Self {
         Self { center, side, phi }
     }
 }
