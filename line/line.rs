@@ -1,5 +1,6 @@
 use crate::geometry::base::{Angle, Point, Vector};
 
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Line {
     pub r: f32,
     pub phi: Angle,

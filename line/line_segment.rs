@@ -1,5 +1,6 @@
 use crate::geometry::base::{Point, Vector};
 
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct LineSegment {
     pub origin: Point,
     pub end: Point,
@@ -29,7 +30,6 @@ impl LineSegment {
         let t_constr = t.min(1.0).max(0.0);
         return self.origin + ab * t_constr;
     }
-
     pub fn is_on_segment(&self, point: Point) -> bool {
         point.distance_to(self.origin) + point.distance_to(self.end)
             == self.origin.distance_to(self.end)
@@ -53,16 +53,6 @@ impl LineSegment {
             return None;
         }
         Some(intersection)
-    }
-}
-impl Copy for LineSegment {}
-
-impl Clone for LineSegment {
-    fn clone(&self) -> Self {
-        Self {
-            origin: self.origin.clone(),
-            end: self.end.clone(),
-        }
     }
 }
 

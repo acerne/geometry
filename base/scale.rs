@@ -1,17 +1,7 @@
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Scale {
     pub sx: f32,
     pub sy: f32,
-}
-
-impl Copy for Scale {}
-
-impl Clone for Scale {
-    fn clone(&self) -> Self {
-        Self {
-            sx: self.sx.clone(),
-            sy: self.sy.clone(),
-        }
-    }
 }
 
 impl std::ops::Mul<Scale> for Scale {

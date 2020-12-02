@@ -2,6 +2,7 @@ use crate::geometry::base::{Angle, Point, Scale, Size, Vector};
 use crate::geometry::shape::{shape::Shape, Polygon};
 use float_eq::FloatEq;
 
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Rectangle {
     center: Point,
     size: Size,
@@ -51,23 +52,9 @@ impl Shape for Rectangle {
         vertices.push(self.center + Vector::new(-w_cos - h_sin, -w_sin + h_cos));
         Polygon { vertices }
     }
-}
-
-impl PartialEq for Rectangle {
-    fn eq(&self, other: &Self) -> bool {
-        self.center.eq_abs(&other.center, &10e-6)
-            && self.size.eq_abs(&other.size, &10e-6)
-            && float_eq::float_eq!(self.phi, other.phi, abs <= 10e-6)
-    }
-}
-
-impl std::fmt::Debug for Rectangle {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("Rectangle")
-            .field("center", &self.center)
-            .field("size", &self.size)
-            .field("phi", &self.phi)
-            .finish()
+    fn closest_point(&self, point: Point) -> Point {
+        let polygon = self.to_polygon();
+        polygon.closest_point(point)
     }
 }
 

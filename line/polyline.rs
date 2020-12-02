@@ -1,5 +1,6 @@
 use crate::geometry::base::{Point, Vector};
 
+#[derive(Debug, Default, PartialEq)]
 pub struct Polyline {
     pub points: Vec<Point>,
 }

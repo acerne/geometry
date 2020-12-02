@@ -1,6 +1,7 @@
 use crate::geometry::base::Scale;
 use float_eq::FloatEq;
 
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Size {
     pub w: f32,
     pub h: f32,
@@ -9,17 +10,6 @@ pub struct Size {
 impl Size {
     pub fn new(w: f32, h: f32) -> Self {
         Self { w, h }
-    }
-}
-
-impl Copy for Size {}
-
-impl Clone for Size {
-    fn clone(&self) -> Self {
-        Self {
-            w: self.w.clone(),
-            h: self.h.clone(),
-        }
     }
 }
 
@@ -63,12 +53,6 @@ impl std::ops::Div<f32> for Size {
     }
 }
 
-impl PartialEq for Size {
-    fn eq(&self, other: &Self) -> bool {
-        self.w == other.w && self.h == other.h
-    }
-}
-
 impl FloatEq for Size {
     type Epsilon = f32;
 
@@ -94,14 +78,5 @@ impl FloatEq for Size {
 
     fn eq_ulps(&self, other: &Self, max_diff: &float_eq::UlpsEpsilon<f32>) -> bool {
         self.w.eq_ulps(&other.w, max_diff) && self.h.eq_ulps(&other.h, max_diff)
-    }
-}
-
-impl std::fmt::Debug for Size {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("Size")
-            .field("w", &self.w)
-            .field("h", &self.h)
-            .finish()
     }
 }

@@ -2,6 +2,7 @@ use crate::geometry::base::{Angle, Point, Vector};
 use crate::geometry::shape::{shape::Shape, Polygon};
 use float_eq::FloatEq;
 
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Hexagon {
     pub center: Point,
     pub side: f32,
@@ -42,23 +43,9 @@ impl Shape for Hexagon {
         }
         Polygon { vertices }
     }
-}
-
-impl PartialEq for Hexagon {
-    fn eq(&self, other: &Self) -> bool {
-        self.center.eq_abs(&other.center, &10e-6)
-            && float_eq::float_eq!(self.side, other.side, abs <= 10e-6)
-            && self.phi.eq_abs(&other.phi, &10e-6)
-    }
-}
-
-impl std::fmt::Debug for Hexagon {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("Hexagon")
-            .field("center", &self.center)
-            .field("side", &self.side)
-            .field("phi", &self.phi)
-            .finish()
+    fn closest_point(&self, point: Point) -> Point {
+        let polygon = self.to_polygon();
+        polygon.closest_point(point)
     }
 }
 

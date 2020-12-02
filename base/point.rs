@@ -1,6 +1,7 @@
 use crate::geometry::base::{Angle, Vector};
 use float_eq::FloatEq;
 
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Point {
     pub x: f32,
     pub y: f32,
@@ -28,17 +29,6 @@ impl Point {
         Vector {
             dx: self.x,
             dy: self.y,
-        }
-    }
-}
-
-impl Copy for Point {}
-
-impl Clone for Point {
-    fn clone(&self) -> Self {
-        Self {
-            x: self.x.clone(),
-            y: self.y.clone(),
         }
     }
 }
@@ -123,12 +113,6 @@ impl std::ops::Div<f32> for Point {
     }
 }
 
-impl PartialEq for Point {
-    fn eq(&self, other: &Self) -> bool {
-        self.x == other.x && self.y == other.y
-    }
-}
-
 impl FloatEq for Point {
     type Epsilon = f32;
 
@@ -154,15 +138,6 @@ impl FloatEq for Point {
 
     fn eq_ulps(&self, other: &Self, max_diff: &float_eq::UlpsEpsilon<f32>) -> bool {
         self.x.eq_ulps(&other.x, max_diff) && self.y.eq_ulps(&other.y, max_diff)
-    }
-}
-
-impl std::fmt::Debug for Point {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("Point")
-            .field("x", &self.x)
-            .field("y", &self.y)
-            .finish()
     }
 }
 

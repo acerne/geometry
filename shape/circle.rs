@@ -2,6 +2,7 @@ use crate::geometry::base::{Angle, Point, Vector};
 use crate::geometry::shape::{shape::Shape, Polygon};
 use float_eq::FloatEq;
 
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Circle {
     center: Point,
     radius: f32,
@@ -46,21 +47,9 @@ impl Shape for Circle {
         }
         Polygon { vertices }
     }
-}
-
-impl PartialEq for Circle {
-    fn eq(&self, other: &Self) -> bool {
-        self.center.eq_abs(&other.center, &10e-6)
-            && float_eq::float_eq!(self.radius, other.radius, abs <= 10e-6)
-    }
-}
-
-impl std::fmt::Debug for Circle {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("Circle")
-            .field("center", &self.center)
-            .field("radius", &self.radius)
-            .finish()
+    fn closest_point(&self, point: Point) -> Point {
+        let v = Vector::from_points(self.center, point).get_unit_vector();
+        self.center + (v * self.radius).to_point()
     }
 }
 
@@ -108,5 +97,13 @@ mod tests {
             vert_leftmost,
             vert_topmost
         );
+    }
+    #[test]
+    fn test_closest_point() {
+        let circle = Circle::new(Point::new(0.0, 0.0), 10.0);
+        let point = Point::new(15.0, -15.0);
+        let result = circle.closest_point(point);
+        let expected = Point::new(10.0 / 2f32.sqrt(), -10.0 / 2f32.sqrt());
+        assert_eq!(result, expected);
     }
 }
