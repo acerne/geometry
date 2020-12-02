@@ -1,6 +1,5 @@
 use crate::geometry::base::{Angle, Point, Vector};
 use crate::geometry::shape::{shape::Shape, Polygon};
-use float_eq::FloatEq;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Hexagon {
@@ -53,7 +52,7 @@ impl Shape for Hexagon {
 mod tests {
     use crate::geometry::base::{Angle, Point, Vector};
     use crate::geometry::shape::{shape::Shape, Hexagon};
-    use float_eq::FloatEq;
+
     #[test]
     fn test_translate() {
         let mut hexagon = Hexagon::new(Point::new(10.0, -5.0), 10.0, Angle::zero());
@@ -86,12 +85,12 @@ mod tests {
         let vert_e = Point::new(9.0, -5.0 - 3.0f32.sqrt());
         let vert_f = Point::new(11.0, -5.0 - 3.0f32.sqrt());
         assert!(
-            poly.vertices[0].eq_abs(&vert_a, &10e-6)
-                && poly.vertices[1].eq_abs(&vert_b, &10e-6)
-                && poly.vertices[2].eq_abs(&vert_c, &10e-6)
-                && poly.vertices[3].eq_abs(&vert_d, &10e-6)
-                && poly.vertices[4].eq_abs(&vert_e, &10e-6)
-                && poly.vertices[5].eq_abs(&vert_f, &10e-6),
+            poly.vertices[0] == vert_a
+                && poly.vertices[1] == vert_b
+                && poly.vertices[2] == vert_c
+                && poly.vertices[3] == vert_d
+                && poly.vertices[4] == vert_e
+                && poly.vertices[5] == vert_f,
             "{} == {}, {}, {}, {}, {}, {}",
             poly,
             vert_a,
@@ -113,12 +112,12 @@ mod tests {
         let vert_e = Point::new(10.0 + 3.0f32.sqrt(), -6.0);
         let vert_f = Point::new(10.0 + 3.0f32.sqrt(), -4.0);
         assert!(
-            poly.vertices[0].eq_abs(&vert_a, &10e-6)
-                && poly.vertices[1].eq_abs(&vert_b, &10e-6)
-                && poly.vertices[2].eq_abs(&vert_c, &10e-6)
-                && poly.vertices[3].eq_abs(&vert_d, &10e-6)
-                && poly.vertices[4].eq_abs(&vert_e, &10e-6)
-                && poly.vertices[5].eq_abs(&vert_f, &10e-6),
+            poly.vertices[0] == vert_a
+                && poly.vertices[1] == vert_b
+                && poly.vertices[2] == vert_c
+                && poly.vertices[3] == vert_d
+                && poly.vertices[4] == vert_e
+                && poly.vertices[5] == vert_f,
             "{} == {}, {}, {}, {}, {}, {}",
             poly,
             vert_a,

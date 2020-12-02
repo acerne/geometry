@@ -1,7 +1,6 @@
 use crate::geometry::base::{Angle, Vector};
-use float_eq::FloatEq;
 
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Point {
     pub x: f32,
     pub y: f32,
@@ -113,31 +112,10 @@ impl std::ops::Div<f32> for Point {
     }
 }
 
-impl FloatEq for Point {
-    type Epsilon = f32;
-
-    fn eq_abs(&self, other: &Self, max_diff: &f32) -> bool {
-        self.x.eq_abs(&other.x, max_diff) && self.y.eq_abs(&other.y, max_diff)
-    }
-
-    fn eq_rmax(&self, other: &Self, max_diff: &f32) -> bool {
-        self.x.eq_rmax(&other.x, max_diff) && self.y.eq_rmax(&other.y, max_diff)
-    }
-
-    fn eq_rmin(&self, other: &Self, max_diff: &f32) -> bool {
-        self.x.eq_rmin(&other.x, max_diff) && self.y.eq_rmin(&other.y, max_diff)
-    }
-
-    fn eq_r1st(&self, other: &Self, max_diff: &f32) -> bool {
-        self.x.eq_r1st(&other.x, max_diff) && self.y.eq_r1st(&other.y, max_diff)
-    }
-
-    fn eq_r2nd(&self, other: &Self, max_diff: &f32) -> bool {
-        self.x.eq_r2nd(&other.x, max_diff) && self.y.eq_r2nd(&other.y, max_diff)
-    }
-
-    fn eq_ulps(&self, other: &Self, max_diff: &float_eq::UlpsEpsilon<f32>) -> bool {
-        self.x.eq_ulps(&other.x, max_diff) && self.y.eq_ulps(&other.y, max_diff)
+impl PartialEq for Point {
+    fn eq(&self, other: &Self) -> bool {
+        float_eq::FloatEq::eq_abs(&self.x, &other.x, &10e-6)
+            && float_eq::FloatEq::eq_abs(&self.y, &other.y, &10e-6)
     }
 }
 
@@ -150,7 +128,6 @@ impl std::fmt::Display for Point {
 #[cfg(test)]
 mod tests {
     use crate::geometry::base::{Angle, Point};
-    use float_eq::FloatEq;
 
     #[test]
     fn test_distance_to() {

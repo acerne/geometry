@@ -60,7 +60,6 @@ impl LineSegment {
 mod tests {
     use crate::geometry::base::{Point, Vector};
     use crate::geometry::line::LineSegment;
-    use float_eq::FloatEq;
 
     #[test]
     fn test_from_vector() {
@@ -68,18 +67,8 @@ mod tests {
         let point_b = Point::new(-1.0, -1.0);
         let vector = Vector::from_points(point_a, point_b);
         let line = LineSegment::from_vector(point_a, vector);
-        assert!(
-            line.origin.eq_abs(&point_a, &10e-6),
-            "{} == {}",
-            line.origin,
-            point_a
-        );
-        assert!(
-            line.end.eq_abs(&point_b, &10e-6),
-            "{} == {}",
-            line.origin,
-            point_b
-        );
+        assert!(line.origin == point_a, "{} == {}", line.origin, point_a);
+        assert!(line.end == point_b, "{} == {}", line.origin, point_b);
     }
     #[test]
     fn test_closest_point() {

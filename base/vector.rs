@@ -1,7 +1,6 @@
 use crate::geometry::base::{Angle, Point, Scale, Size};
-use float_eq::FloatEq;
 
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Vector {
     pub dx: f32,
     pub dy: f32,
@@ -145,31 +144,10 @@ impl std::ops::Neg for Vector {
     }
 }
 
-impl FloatEq for Vector {
-    type Epsilon = f32;
-
-    fn eq_abs(&self, other: &Self, max_diff: &f32) -> bool {
-        self.dx.eq_abs(&other.dx, max_diff) && self.dy.eq_abs(&other.dy, max_diff)
-    }
-
-    fn eq_rmax(&self, other: &Self, max_diff: &f32) -> bool {
-        self.dx.eq_rmax(&other.dx, max_diff) && self.dy.eq_rmax(&other.dy, max_diff)
-    }
-
-    fn eq_rmin(&self, other: &Self, max_diff: &f32) -> bool {
-        self.dx.eq_rmin(&other.dx, max_diff) && self.dy.eq_rmin(&other.dy, max_diff)
-    }
-
-    fn eq_r1st(&self, other: &Self, max_diff: &f32) -> bool {
-        self.dx.eq_r1st(&other.dx, max_diff) && self.dy.eq_r1st(&other.dy, max_diff)
-    }
-
-    fn eq_r2nd(&self, other: &Self, max_diff: &f32) -> bool {
-        self.dx.eq_r2nd(&other.dx, max_diff) && self.dy.eq_r2nd(&other.dy, max_diff)
-    }
-
-    fn eq_ulps(&self, other: &Self, max_diff: &float_eq::UlpsEpsilon<f32>) -> bool {
-        self.dx.eq_ulps(&other.dx, max_diff) && self.dy.eq_ulps(&other.dy, max_diff)
+impl PartialEq for Vector {
+    fn eq(&self, other: &Self) -> bool {
+        float_eq::FloatEq::eq_abs(&self.dx, &other.dx, &10e-6)
+            && float_eq::FloatEq::eq_abs(&self.dy, &other.dy, &10e-6)
     }
 }
 
@@ -182,31 +160,20 @@ impl std::fmt::Display for Vector {
 #[cfg(test)]
 mod tests {
     use crate::geometry::base::{Angle, Vector};
-    use float_eq::FloatEq;
 
     #[test]
     fn test_normalize() {
         let mut vector_a = Vector::new(5.0, -5.0);
         vector_a.normalize();
         let vector_b = Vector::new(1.0 / 2f32.sqrt(), -1.0 / 2f32.sqrt());
-        assert!(
-            vector_a.eq_abs(&vector_b, &10e-6),
-            "{} == {}",
-            vector_a,
-            vector_b
-        );
+        assert!(vector_a == vector_b, "{} == {}", vector_a, vector_b);
     }
     #[test]
     fn test_rotate() {
         let mut vector_a = Vector::new(1.0, 1.0);
         vector_a.rotate(90f32.to_radians());
         let vector_b = Vector::new(-1.0, 1.0);
-        assert!(
-            vector_a.eq_abs(&vector_b, &10e-6),
-            "{} == {}",
-            vector_a,
-            vector_b
-        );
+        assert!(vector_a == vector_b, "{} == {}", vector_a, vector_b);
     }
     #[test]
     fn test_dot() {
@@ -229,15 +196,10 @@ mod tests {
         assert_eq!(result, 2f32.sqrt());
     }
     #[test]
-    fn test_get_orientatio() {
+    fn test_get_orientation() {
         let vector_a = Vector::new(1.0, -1.0);
         let result = vector_a.get_direction();
         let expected = Angle::new(-45f64);
-        assert!(
-            result.eq_abs(&expected, &10e-6),
-            "{} == {}",
-            result,
-            expected
-        );
+        assert!(result == expected, "{} == {}", result, expected);
     }
 }

@@ -59,7 +59,6 @@ mod tests {
     use crate::geometry::base::{Point, Vector};
     use crate::geometry::line::LineSegment;
     use crate::geometry::shape::Polygon;
-    use float_eq::FloatEq;
 
     #[test]
     fn test_to_line_segments() {

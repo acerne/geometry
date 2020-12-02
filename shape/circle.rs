@@ -1,6 +1,5 @@
 use crate::geometry::base::{Angle, Point, Vector};
 use crate::geometry::shape::{shape::Shape, Polygon};
-use float_eq::FloatEq;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Circle {
@@ -57,7 +56,7 @@ impl Shape for Circle {
 mod tests {
     use crate::geometry::base::{Point, Vector};
     use crate::geometry::shape::{shape::Shape, Circle};
-    use float_eq::FloatEq;
+
     #[test]
     fn test_translate() {
         let mut circle = Circle::new(Point::new(10.0, -5.0), 10.0);
@@ -83,10 +82,10 @@ mod tests {
         let vert_leftmost = Point::new(0.0, -5.0);
         let vert_topmost = Point::new(10.0, -15.0);
         assert!(
-            poly.vertices[0].eq_abs(&vert_rightmost, &10e-6)
-                && poly.vertices[length / 4].eq_abs(&vert_bottommost, &10e-6)
-                && poly.vertices[2 * length / 4].eq_abs(&vert_leftmost, &10e-6)
-                && poly.vertices[3 * length / 4].eq_abs(&vert_topmost, &10e-6),
+            poly.vertices[0] == vert_rightmost
+                && poly.vertices[length / 4] == vert_bottommost
+                && poly.vertices[2 * length / 4] == vert_leftmost
+                && poly.vertices[3 * length / 4] == vert_topmost,
             "{}, {}, {}, {} == {}, {}, {}, {}",
             poly.vertices[0],
             poly.vertices[length / 4],

@@ -1,6 +1,4 @@
-use float_eq::FloatEq;
-
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Angle {
     deg: f64,
 }
@@ -74,31 +72,9 @@ impl std::ops::Div<Angle> for Angle {
     }
 }
 
-impl FloatEq for Angle {
-    type Epsilon = f64;
-
-    fn eq_abs(&self, other: &Self, max_diff: &f64) -> bool {
-        self.deg.eq_abs(&other.deg, max_diff)
-    }
-
-    fn eq_rmax(&self, other: &Self, max_diff: &f64) -> bool {
-        self.deg.eq_rmax(&other.deg, max_diff)
-    }
-
-    fn eq_rmin(&self, other: &Self, max_diff: &f64) -> bool {
-        self.deg.eq_rmin(&other.deg, max_diff)
-    }
-
-    fn eq_r1st(&self, other: &Self, max_diff: &f64) -> bool {
-        self.deg.eq_r1st(&other.deg, max_diff)
-    }
-
-    fn eq_r2nd(&self, other: &Self, max_diff: &f64) -> bool {
-        self.deg.eq_r2nd(&other.deg, max_diff)
-    }
-
-    fn eq_ulps(&self, other: &Self, max_diff: &float_eq::UlpsEpsilon<f64>) -> bool {
-        self.deg.eq_ulps(&other.deg, max_diff)
+impl PartialEq for Angle {
+    fn eq(&self, other: &Self) -> bool {
+        float_eq::FloatEq::eq_abs(&self.deg, &other.deg, &10e-6)
     }
 }
 

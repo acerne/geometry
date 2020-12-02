@@ -1,6 +1,5 @@
 use crate::geometry::base::{Angle, Point, Scale, Size, Vector};
 use crate::geometry::shape::{shape::Shape, Polygon};
-use float_eq::FloatEq;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Rectangle {
@@ -62,7 +61,7 @@ impl Shape for Rectangle {
 mod tests {
     use crate::geometry::base::{Angle, Point, Size, Vector};
     use crate::geometry::shape::{shape::Shape, Rectangle};
-    use float_eq::FloatEq;
+
     #[test]
     fn test_translate() {
         // test axis aligned rectangle
@@ -116,10 +115,10 @@ mod tests {
         let vert_c = Point::new(12.0, -4.0);
         let vert_d = Point::new(8.0, -4.0);
         assert!(
-            poly.vertices[0].eq_abs(&vert_a, &10e-6)
-                && poly.vertices[1].eq_abs(&vert_b, &10e-6)
-                && poly.vertices[2].eq_abs(&vert_c, &10e-6)
-                && poly.vertices[3].eq_abs(&vert_d, &10e-6),
+            poly.vertices[0] == vert_a
+                && poly.vertices[1] == vert_b
+                && poly.vertices[2] == vert_c
+                && poly.vertices[3] == vert_d,
             "{} == {}, {}, {}, {}",
             poly,
             vert_a,
@@ -142,10 +141,10 @@ mod tests {
         let vert_c = Point::new(9.0, -3.0);
         let vert_d = Point::new(9.0, -7.0);
         assert!(
-            poly.vertices[0].eq_abs(&vert_a, &10e-6)
-                && poly.vertices[1].eq_abs(&vert_b, &10e-6)
-                && poly.vertices[2].eq_abs(&vert_c, &10e-6)
-                && poly.vertices[3].eq_abs(&vert_d, &10e-6),
+            poly.vertices[0] == vert_a
+                && poly.vertices[1] == vert_b
+                && poly.vertices[2] == vert_c
+                && poly.vertices[3] == vert_d,
             "{} == {}, {}, {}, {}",
             poly,
             vert_a,
@@ -169,10 +168,10 @@ mod tests {
         let vert_c = Point::new(10.0, -4.0);
         let vert_d = Point::new(9.0, -5.0);
         assert!(
-            poly.vertices[0].eq_abs(&vert_a, &10e-6)
-                && poly.vertices[1].eq_abs(&vert_b, &10e-6)
-                && poly.vertices[2].eq_abs(&vert_c, &10e-6)
-                && poly.vertices[3].eq_abs(&vert_d, &10e-6),
+            poly.vertices[0] == vert_a
+                && poly.vertices[1] == vert_b
+                && poly.vertices[2] == vert_c
+                && poly.vertices[3] == vert_d,
             "{} == {}, {}, {}, {}",
             poly,
             vert_a,
