@@ -22,6 +22,14 @@ impl LineSegment {
             dy: diff.y,
         }
     }
+    pub fn closest_point(&self, point: Point) -> Point {
+        let ab = Vector::from_points(self.origin, self.end);
+        let ap = Vector::from_points(self.origin, point);
+        let t = (ap.dx * ab.dx + ap.dy * ab.dy) / (ab.dx.powf(2.0) + ab.dy.powf(2.0));
+        let t_constr = t.min(1.0).max(0.0);
+        return self.origin + ab * t_constr;
+    }
+
     pub fn is_on_segment(&self, point: Point) -> bool {
         point.distance_to(self.origin) + point.distance_to(self.end)
             == self.origin.distance_to(self.end)
@@ -82,6 +90,27 @@ mod tests {
             line.origin,
             point_b
         );
+    }
+    #[test]
+    fn test_closest_point() {
+        let point_a = Point::new(2.0, 0.0);
+        let point_b = Point::new(0.0, 2.0);
+        let line = LineSegment::new(point_a, point_b);
+        // test middle of line segment
+        let point = Point::new(2.0, 2.0);
+        let result = line.closest_point(point);
+        let expected = Point::new(1.0, 1.0);
+        assert_eq!(result, expected);
+        // test outside of line segment origin
+        let point = Point::new(3.0, 0.0);
+        let result = line.closest_point(point);
+        let expected = Point::new(2.0, 0.0);
+        assert_eq!(result, expected);
+        // test outside of line segment end
+        let point = Point::new(0.0, 3.0);
+        let result = line.closest_point(point);
+        let expected = Point::new(0.0, 2.0);
+        assert_eq!(result, expected);
     }
     #[test]
     fn test_is_on_segment() {
