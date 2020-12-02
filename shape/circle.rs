@@ -3,8 +3,8 @@ use crate::geometry::shape::{shape::Shape, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Circle {
-    center: Point,
-    radius: f32,
+    pub center: Point,
+    pub radius: f32,
 }
 
 impl Circle {
@@ -14,6 +14,12 @@ impl Circle {
 }
 
 impl Shape for Circle {
+    fn center(&self) -> Point {
+        self.center
+    }
+    fn enclosing_radius(&self) -> f32 {
+        self.radius
+    }
     fn translate(&mut self, vector: Vector) {
         self.center = self.center + vector;
     }

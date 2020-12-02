@@ -1,4 +1,4 @@
-use crate::geometry::base::Point;
+use crate::geometry::base::{Point, Vector};
 use crate::geometry::shape::Polygon;
 use ggez::*;
 
@@ -7,6 +7,10 @@ pub fn convert_to_point(point: &Point) -> mint::Point2<f32> {
         x: point.x,
         y: point.y,
     }
+}
+
+pub fn convert_to_vector(vector: &Vector) -> nalgebra::Vector2<f32> {
+    nalgebra::Vector2::new(vector.dx, vector.dy)
 }
 
 pub fn convert_to_points(polygon: &Polygon) -> Vec<mint::Point2<f32>> {

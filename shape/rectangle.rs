@@ -21,6 +21,12 @@ impl Rectangle {
 }
 
 impl Shape for Rectangle {
+    fn center(&self) -> Point {
+        self.center
+    }
+    fn enclosing_radius(&self) -> f32 {
+        (self.size / 2.0).to_vector().get_magnitude()
+    }
     fn translate(&mut self, vector: Vector) {
         self.center = self.center + vector;
     }

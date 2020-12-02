@@ -2,6 +2,8 @@ use crate::geometry::base::{Angle, Point, Vector};
 use crate::geometry::shape::Polygon;
 
 pub trait Shape {
+    fn center(&self) -> Point;
+    fn enclosing_radius(&self) -> f32;
     fn translate(&mut self, vector: Vector);
     fn move_to(&mut self, point: Point);
     fn rotate(&mut self, theta: Angle);

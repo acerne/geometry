@@ -1,4 +1,4 @@
-use crate::geometry::base::Scale;
+use crate::geometry::base::{Scale, Vector};
 
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Size {
@@ -9,6 +9,9 @@ pub struct Size {
 impl Size {
     pub fn new(w: f32, h: f32) -> Self {
         Self { w, h }
+    }
+    pub fn to_vector(&self) -> Vector {
+        Vector::new(self.w, self.h)
     }
 }
 

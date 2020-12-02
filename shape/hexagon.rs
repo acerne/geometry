@@ -15,6 +15,12 @@ impl Hexagon {
 }
 
 impl Shape for Hexagon {
+    fn center(&self) -> Point {
+        self.center
+    }
+    fn enclosing_radius(&self) -> f32 {
+        self.side
+    }
     fn translate(&mut self, vector: Vector) {
         self.center = self.center + vector;
     }
@@ -127,5 +133,13 @@ mod tests {
             vert_e,
             vert_f
         );
+    }
+    #[test]
+    fn test_closest_point() {
+        let hexagon = Hexagon::new(Point::new(0.0, 0.0), 10.0, Angle::zero());
+        let point = Point::new(0.0, -15.0);
+        let result = hexagon.closest_point(point);
+        let expected = Point::new(0.0, -10.0 * 3.0f32.sqrt() / 2.0);
+        assert_eq!(result, expected);
     }
 }
