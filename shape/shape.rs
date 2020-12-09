@@ -1,7 +1,15 @@
 use crate::geometry::base::{Angle, Point, Vector};
 use crate::geometry::shape::Polygon;
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ShapeType {
+    Circle,
+    Rectangle,
+    Hexagon,
+}
+
 pub trait Shape {
+    fn get_type(&self) -> ShapeType;
     fn center(&self) -> Point;
     fn enclosing_radius(&self) -> f32;
     fn translate(&mut self, vector: Vector);
@@ -11,6 +19,7 @@ pub trait Shape {
     fn rotate_about(&mut self, point: Point, theta: Angle);
     fn to_polygon(&self) -> Polygon;
     fn closest_point(&self, point: Point) -> Point;
+    fn contact_point(&self, origin: Point, direction: Vector) -> Option<Point>;
     //fn to_bounding_box(&self) -> Box;
     //fn to_enclosing_circle(&self) -> Circle;
     //fn center_of_gravity(&self) -> Point

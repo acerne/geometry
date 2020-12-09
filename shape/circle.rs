@@ -1,5 +1,5 @@
-use crate::geometry::base::{Angle, Point, Vector};
-use crate::geometry::shape::{shape::Shape, Polygon};
+use crate::geometry::base::{Angle, LineSegment, Point, Vector};
+use crate::geometry::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Circle {
@@ -14,6 +14,9 @@ impl Circle {
 }
 
 impl Shape for Circle {
+    fn get_type(&self) -> ShapeType {
+        ShapeType::Circle
+    }
     fn center(&self) -> Point {
         self.center
     }
@@ -55,6 +58,25 @@ impl Shape for Circle {
     fn closest_point(&self, point: Point) -> Point {
         let v = Vector::from_points(self.center, point).get_unit_vector();
         self.center + (v * self.radius).to_point()
+    }
+    fn contact_point(&self, origin: Point, direction: Vector) -> Option<Point> {
+        let extended =
+            direction.get_unit_vector() * (origin.distance_to(self.center) + self.radius);
+        let line = LineSegment::from_vector(origin, extended);
+        let (ia, ib) = line.intersection_circle(self);
+        if let Some(intersection_a) = ia {
+            if let Some(intersection_b) = ib {
+                // Two intersections
+                if origin.distance_to(intersection_a) < origin.distance_to(intersection_b) {
+                    return Some(intersection_a);
+                } else {
+                    return Some(intersection_b);
+                }
+            } else {
+                return Some(intersection_a);
+            }
+        }
+        None // No contact
     }
 }
 

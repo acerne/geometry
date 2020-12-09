@@ -1,5 +1,4 @@
-use crate::geometry::base::{Point, Vector};
-use crate::geometry::line::LineSegment;
+use crate::geometry::base::{LineSegment, Point, Vector};
 
 #[derive(Debug, Default, PartialEq)]
 pub struct Polygon {
@@ -56,8 +55,7 @@ impl std::fmt::Display for Polygon {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Point, Vector};
-    use crate::geometry::line::LineSegment;
+    use crate::geometry::base::{LineSegment, Point, Vector};
     use crate::geometry::shape::Polygon;
 
     #[test]

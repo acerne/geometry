@@ -1,4 +1,5 @@
 use crate::geometry::base::{Point, Vector};
+use crate::geometry::shape::Circle;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct LineSegment {
@@ -34,7 +35,7 @@ impl LineSegment {
         point.distance_to(self.origin) + point.distance_to(self.end)
             == self.origin.distance_to(self.end)
     }
-    fn intersection(&self, other: LineSegment) -> Option<Point> {
+    pub fn intersection(&self, other: LineSegment) -> Option<Point> {
         let a1 = self.end.y - self.origin.y;
         let b1 = self.origin.x - self.end.x;
         let c1 = a1 * self.origin.x + b1 * self.origin.y;
@@ -54,12 +55,35 @@ impl LineSegment {
         }
         Some(intersection)
     }
+    pub fn intersection_circle(&self, circle: &Circle) -> (Option<Point>, Option<Point>) {
+        let origin_to_end = self.to_vector();
+        let circle_to_origin = Vector::from_points(circle.center, self.origin);
+
+        let a = origin_to_end.dot(origin_to_end);
+        let b = 2.0 * origin_to_end.dot(circle_to_origin);
+        let c = circle_to_origin.dot(circle_to_origin) - circle.radius.powf(2.0);
+
+        let det = b * b - 4.0 * a * c;
+        if det == 0.0 {
+            // one solution
+            let t = -b / (2.0 * a);
+            return (Some(self.origin + origin_to_end * t), None);
+        } else if det > 0.0 {
+            // two solutions
+            let t1 = -b + det.sqrt() / (2.0 * a);
+            let t2 = -b - det.sqrt() / (2.0 * a);
+            return (
+                Some(self.origin + origin_to_end * t1),
+                Some(self.origin + origin_to_end * t2),
+            );
+        }
+        (None, None) // no solutions
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Point, Vector};
-    use crate::geometry::line::LineSegment;
+    use crate::geometry::base::{LineSegment, Point, Vector};
 
     #[test]
     fn test_from_vector() {

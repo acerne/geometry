@@ -1,5 +1,5 @@
 use crate::geometry::base::{Angle, Point, Vector};
-use crate::geometry::shape::{shape::Shape, Polygon};
+use crate::geometry::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Hexagon {
@@ -15,6 +15,9 @@ impl Hexagon {
 }
 
 impl Shape for Hexagon {
+    fn get_type(&self) -> ShapeType {
+        ShapeType::Hexagon
+    }
     fn center(&self) -> Point {
         self.center
     }
@@ -51,6 +54,10 @@ impl Shape for Hexagon {
     fn closest_point(&self, point: Point) -> Point {
         let polygon = self.to_polygon();
         polygon.closest_point(point)
+    }
+    fn contact_point(&self, origin: Point, direction: Vector) -> Option<Point> {
+        // TODO
+        None
     }
 }
 

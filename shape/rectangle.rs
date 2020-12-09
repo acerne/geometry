@@ -1,11 +1,11 @@
 use crate::geometry::base::{Angle, Point, Scale, Size, Vector};
-use crate::geometry::shape::{shape::Shape, Polygon};
+use crate::geometry::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Rectangle {
-    center: Point,
-    size: Size,
-    phi: Angle,
+    pub center: Point,
+    pub size: Size,
+    pub phi: Angle,
 }
 
 impl Rectangle {
@@ -21,6 +21,9 @@ impl Rectangle {
 }
 
 impl Shape for Rectangle {
+    fn get_type(&self) -> ShapeType {
+        ShapeType::Rectangle
+    }
     fn center(&self) -> Point {
         self.center
     }
@@ -60,6 +63,10 @@ impl Shape for Rectangle {
     fn closest_point(&self, point: Point) -> Point {
         let polygon = self.to_polygon();
         polygon.closest_point(point)
+    }
+    fn contact_point(&self, origin: Point, direction: Vector) -> Option<Point> {
+        // TODO
+        None
     }
 }
 
