@@ -33,3 +33,19 @@ pub fn distance_closest_points(shape_a: &dyn Shape, shape_b: &dyn Shape) -> (f32
     }
     (best, best_point_a, best_point_b)
 }
+
+pub fn ball_bounce(ball: &dyn Shape, ball_direction: Vector, object: &dyn Shape) -> Option<Vector> {
+    assert_eq!(
+        ball.get_type(),
+        ShapeType::Circle,
+        "Expected ball to be somewhat circular"
+    );
+
+    let contact = object.contact_point(ball.center(), ball_direction);
+    if let Some(point) = contact {
+        if let Some(vector) = object.get_normal_vector_at(point) {
+            return Some(vector);
+        }
+    }
+    None
+}

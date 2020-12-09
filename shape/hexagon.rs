@@ -55,10 +55,6 @@ impl Shape for Hexagon {
         let polygon = self.to_polygon();
         polygon.closest_point(point)
     }
-    fn contact_point(&self, origin: Point, direction: Vector) -> Option<Point> {
-        // TODO
-        None
-    }
 }
 
 #[cfg(test)]

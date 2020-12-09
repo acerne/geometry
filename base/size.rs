@@ -13,6 +13,12 @@ impl Size {
     pub fn to_vector(&self) -> Vector {
         Vector::new(self.w, self.h)
     }
+    pub fn max(&self) -> f32 {
+        self.w.max(self.h)
+    }
+    pub fn min(&self) -> f32 {
+        self.w.min(self.h)
+    }
 }
 
 impl std::ops::Mul<Scale> for Size {

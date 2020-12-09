@@ -1,5 +1,5 @@
 use crate::geometry::base::{Point, Vector};
-use crate::geometry::shape::Circle;
+use crate::geometry::shape::{Circle, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct LineSegment {
@@ -35,7 +35,7 @@ impl LineSegment {
         point.distance_to(self.origin) + point.distance_to(self.end)
             == self.origin.distance_to(self.end)
     }
-    pub fn intersection(&self, other: LineSegment) -> Option<Point> {
+    pub fn intersection(&self, other: &LineSegment) -> Option<Point> {
         let a1 = self.end.y - self.origin.y;
         let b1 = self.origin.x - self.end.x;
         let c1 = a1 * self.origin.x + b1 * self.origin.y;
@@ -43,17 +43,16 @@ impl LineSegment {
         let b2 = other.origin.x - other.end.x;
         let c2 = a2 * other.origin.x + b2 * other.origin.y;
         let delta = a1 * b2 - a2 * b1;
-        if delta == 0.0 {
-            return None;
+        if delta != 0.0 {
+            let intersection = Point {
+                x: (b2 * c1 - b1 * c2) / delta,
+                y: (a1 * c2 - a2 * c1) / delta,
+            };
+            if self.is_on_segment(intersection) && other.is_on_segment(intersection) {
+                return Some(intersection);
+            }
         }
-        let intersection = Point {
-            x: (b2 * c1 - b1 * c2) / delta,
-            y: (a1 * c2 - a2 * c1) / delta,
-        };
-        if !self.is_on_segment(intersection) {
-            return None;
-        }
-        Some(intersection)
+        None
     }
     pub fn intersection_circle(&self, circle: &Circle) -> (Option<Point>, Option<Point>) {
         let origin_to_end = self.to_vector();
@@ -78,6 +77,29 @@ impl LineSegment {
             );
         }
         (None, None) // no solutions
+    }
+    pub fn intersection_polygon(&self, polygon: &Polygon) -> (Option<Point>, Option<Point>) {
+        let poly_lines = polygon.to_line_segments();
+        let mut intersection_points = Vec::new();
+        for poly_line in poly_lines.iter() {
+            if let Some(point) = self.intersection(poly_line) {
+                intersection_points.push(point);
+            }
+        }
+        intersection_points.dedup();
+        // assume polygon is convex - only two line intersections are possible
+        assert!(
+            intersection_points.len() <= 2,
+            "length = {}",
+            intersection_points.len(),
+        );
+
+        if intersection_points.len() == 2 {
+            return (Some(intersection_points[0]), Some(intersection_points[1]));
+        } else if intersection_points.len() == 1 {
+            return (Some(intersection_points[0]), None);
+        }
+        (None, None)
     }
 }
 
@@ -135,20 +157,20 @@ mod tests {
         // test intersecting line segments
         let line_a = LineSegment::new(Point::new(1.0, 1.0), Point::new(-1.0, -1.0));
         let line_b = LineSegment::new(Point::new(1.0, -1.0), Point::new(-1.0, 1.0));
-        let intersection = line_a.intersection(line_b);
+        let intersection = line_a.intersection(&line_b);
         assert!(!intersection.is_none());
         assert_eq!(intersection.unwrap(), Point::zero());
 
         // test parallel line segments
         let line_a = LineSegment::new(Point::new(1.0, 1.0), Point::new(1.0, -1.0));
         let line_b = LineSegment::new(Point::new(-1.0, 1.0), Point::new(-1.0, -1.0));
-        let intersection = line_a.intersection(line_b);
+        let intersection = line_a.intersection(&line_b);
         assert!(intersection.is_none());
 
         // test intersecting lines, but not line segments
         let line_a = LineSegment::new(Point::new(1.0, 1.0), Point::new(2.0, -1.0));
         let line_b = LineSegment::new(Point::new(-1.0, 1.0), Point::new(-2.0, -1.0));
-        let intersection = line_a.intersection(line_b);
+        let intersection = line_a.intersection(&line_b);
         assert!(intersection.is_none());
     }
 }

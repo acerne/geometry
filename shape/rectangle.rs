@@ -1,4 +1,4 @@
-use crate::geometry::base::{Angle, Point, Scale, Size, Vector};
+use crate::geometry::base::{Angle, LineSegment, Point, Scale, Size, Vector};
 use crate::geometry::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -63,10 +63,6 @@ impl Shape for Rectangle {
     fn closest_point(&self, point: Point) -> Point {
         let polygon = self.to_polygon();
         polygon.closest_point(point)
-    }
-    fn contact_point(&self, origin: Point, direction: Vector) -> Option<Point> {
-        // TODO
-        None
     }
 }
 

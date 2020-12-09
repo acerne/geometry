@@ -28,10 +28,10 @@ impl Polygon {
         lines
     }
     pub fn closest_point(&self, point: Point) -> Point {
-        let lines = self.to_line_segments();
-        let mut best = lines.first().unwrap().closest_point(point);
-        for line in lines.iter().skip(1) {
-            let candidate = line.closest_point(point);
+        let sides = self.to_line_segments();
+        let mut best = sides.first().unwrap().closest_point(point);
+        for side in sides.iter().skip(1) {
+            let candidate = side.closest_point(point);
             if candidate.distance_to(point) < best.distance_to(point) {
                 best = candidate;
             }

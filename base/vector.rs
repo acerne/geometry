@@ -20,6 +20,11 @@ impl Vector {
             dy: diff.y,
         }
     }
+    pub fn from_values(magnitude: f32, direction: Angle) -> Self {
+        let dx = magnitude * direction.cos() as f32;
+        let dy = magnitude * direction.sin() as f32;
+        Self { dx, dy }
+    }
     pub fn normalize(&mut self) {
         let mag = self.get_magnitude();
         self.dx = self.dx / mag;

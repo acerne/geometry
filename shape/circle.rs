@@ -78,6 +78,12 @@ impl Shape for Circle {
         }
         None // No contact
     }
+    fn get_normal_vector_at(&self, point: Point) -> Option<Vector> {
+        if point.distance_to(self.center) == self.radius {
+            return Some(Vector::from_points(self.center, point).get_unit_vector());
+        }
+        None
+    }
 }
 
 #[cfg(test)]
