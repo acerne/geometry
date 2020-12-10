@@ -1,3 +1,5 @@
+use crate::geometry::base::Vector;
+
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Angle {
     pub deg: f64,
@@ -14,6 +16,13 @@ impl Angle {
     pub fn from_rad(rad: f64) -> Self {
         let deg = wrap(rad.to_degrees());
         Self { deg }
+    }
+    pub fn from_vectors(vector_a: Vector, vector_b: Vector) -> Self {
+        let cosine = vector_a.dot(vector_b) as f64
+            / (vector_a.get_magnitude() as f64 * vector_b.get_magnitude() as f64);
+        Self {
+            deg: cosine.acos().to_degrees(),
+        }
     }
     pub fn pi() -> Self {
         Self { deg: 180f64 }

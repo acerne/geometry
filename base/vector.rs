@@ -45,6 +45,9 @@ impl Vector {
     pub fn get_magnitude(&self) -> f32 {
         (self.dx.powf(2.0) + self.dy.powf(2.0)).sqrt()
     }
+    pub fn get_squared_magnitude(&self) -> f32 {
+        self.dx.powf(2.0) + self.dy.powf(2.0)
+    }
     pub fn get_direction(&self) -> Angle {
         let rad = self.dy.atan2(self.dx);
         Angle::new((rad as f64).to_degrees())

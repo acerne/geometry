@@ -40,9 +40,9 @@ pub trait Shape {
         None
     }
     fn get_normal_vector_at(&self, point: Point) -> Option<Vector> {
-        let sides = self.to_polygon().to_line_segments();
+        let sides = self.to_polygon().to_lines();
         for side in sides.iter() {
-            if side.is_on_segment(point) {
+            if side.is_on_line(point) {
                 return Some(side.to_vector().get_normal_vector().get_unit_vector());
             }
         }

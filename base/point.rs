@@ -16,6 +16,9 @@ impl Point {
     pub fn distance_to(&self, other: Point) -> f32 {
         ((other.x - self.x).powf(2.0) + (other.y - self.y).powf(2.0)).sqrt()
     }
+    pub fn squared_distance_to(&self, other: Point) -> f32 {
+        (other.x - self.x).powf(2.0) + (other.y - self.y).powf(2.0)
+    }
     pub fn rotate_about(&mut self, point: Point, theta: Angle) {
         let xo = self.x - point.x;
         let yo = self.y - point.y;

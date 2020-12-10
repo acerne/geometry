@@ -31,7 +31,7 @@ impl Line {
         let t_constr = t.min(1.0).max(0.0);
         return self.origin + ab * t_constr;
     }
-    pub fn is_on_segment(&self, point: Point) -> bool {
+    pub fn is_on_line(&self, point: Point) -> bool {
         point.distance_to(self.origin) + point.distance_to(self.end)
             == self.origin.distance_to(self.end)
     }
@@ -48,7 +48,7 @@ impl Line {
                 x: (b2 * c1 - b1 * c2) / delta,
                 y: (a1 * c2 - a2 * c1) / delta,
             };
-            if self.is_on_segment(intersection) && other.is_on_segment(intersection) {
+            if self.is_on_line(intersection) && other.is_on_line(intersection) {
                 return Some(intersection);
             }
         }
@@ -79,7 +79,7 @@ impl Line {
         (None, None) // no solutions
     }
     pub fn intersection_polygon(&self, polygon: &Polygon) -> (Option<Point>, Option<Point>) {
-        let poly_lines = polygon.to_line_segments();
+        let poly_lines = polygon.to_lines();
         let mut intersection_points = Vec::new();
         for poly_line in poly_lines.iter() {
             if let Some(point) = self.intersection(poly_line) {
@@ -144,13 +144,13 @@ mod tests {
         let line = Line::new(point_a, point_b);
         // test point on line segment
         let test_point = Point::zero();
-        assert!(line.is_on_segment(test_point));
+        assert!(line.is_on_line(test_point));
         // test point not on line segment
         let test_point = Point::new(1.0, -1.0);
-        assert!(!line.is_on_segment(test_point));
+        assert!(!line.is_on_line(test_point));
         // test point on line, but not on line segment
         let test_point = Point::new(2.0, 2.0);
-        assert!(!line.is_on_segment(test_point));
+        assert!(!line.is_on_line(test_point));
     }
     #[test]
     fn test_intersection() {
