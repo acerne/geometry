@@ -6,6 +6,7 @@ pub struct Vector {
     pub dy: f32,
 }
 
+#[allow(dead_code)]
 impl Vector {
     pub fn new(dx: f32, dy: f32) -> Self {
         Self { dx, dy }
@@ -20,13 +21,13 @@ impl Vector {
             dy: diff.y,
         }
     }
-    pub fn from_values(magnitude: f32, direction: Angle) -> Self {
-        let dx = magnitude * direction.cos() as f32;
-        let dy = magnitude * direction.sin() as f32;
+    pub fn from_magnitude(magnitude: f32, orientation: Angle) -> Self {
+        let dx = magnitude * orientation.cos() as f32;
+        let dy = magnitude * orientation.sin() as f32;
         Self { dx, dy }
     }
     pub fn normalize(&mut self) {
-        let mag = self.get_magnitude();
+        let mag = self.magnitude();
         self.dx = self.dx / mag;
         self.dy = self.dy / mag;
     }
@@ -42,13 +43,13 @@ impl Vector {
     pub fn cross(self, other: Self) -> f32 {
         self.dx * other.dy - self.dy * other.dx
     }
-    pub fn get_magnitude(&self) -> f32 {
+    pub fn magnitude(&self) -> f32 {
         (self.dx.powf(2.0) + self.dy.powf(2.0)).sqrt()
     }
-    pub fn get_squared_magnitude(&self) -> f32 {
+    pub fn squared_magnitude(&self) -> f32 {
         self.dx.powf(2.0) + self.dy.powf(2.0)
     }
-    pub fn get_direction(&self) -> Angle {
+    pub fn orientation(&self) -> Angle {
         let rad = self.dy.atan2(self.dx);
         Angle::new((rad as f64).to_degrees())
     }
@@ -59,7 +60,7 @@ impl Vector {
         }
     }
     pub fn get_unit_vector(self) -> Vector {
-        let mag = self.get_magnitude();
+        let mag = self.magnitude();
         self / mag
     }
     pub fn to_point(self) -> Point {
@@ -198,15 +199,15 @@ mod tests {
         assert_eq!(result, 28f32);
     }
     #[test]
-    fn test_get_magnitude() {
+    fn test_magnitude() {
         let vector_a = Vector::new(1.0, -1.0);
-        let result = vector_a.get_magnitude();
+        let result = vector_a.magnitude();
         assert_eq!(result, 2f32.sqrt());
     }
     #[test]
     fn test_get_orientation() {
         let vector_a = Vector::new(1.0, -1.0);
-        let result = vector_a.get_direction();
+        let result = vector_a.orientation();
         let expected = Angle::new(-45f64);
         assert!(result == expected, "{} == {}", result, expected);
     }

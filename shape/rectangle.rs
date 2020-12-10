@@ -1,4 +1,4 @@
-use crate::geometry::base::{Angle, Line, Point, Scale, Size, Vector};
+use crate::geometry::base::{Angle, Point, Scale, Size, Vector};
 use crate::geometry::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -8,6 +8,7 @@ pub struct Rectangle {
     pub phi: Angle,
 }
 
+#[allow(dead_code)]
 impl Rectangle {
     pub fn new(center: Point, size: Size, phi: Angle) -> Self {
         Self { center, size, phi }
@@ -28,7 +29,7 @@ impl Shape for Rectangle {
         self.center
     }
     fn enclosing_radius(&self) -> f32 {
-        (self.size / 2.0).to_vector().get_magnitude()
+        (self.size / 2.0).to_vector().magnitude()
     }
     fn translate(&mut self, vector: Vector) {
         self.center = self.center + vector;

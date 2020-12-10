@@ -6,6 +6,7 @@ pub struct Point {
     pub y: f32,
 }
 
+#[allow(dead_code)]
 impl Point {
     pub fn new(x: f32, y: f32) -> Self {
         Self { x, y }

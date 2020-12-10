@@ -144,13 +144,13 @@ mod tests {
         let line = Line::new(point_a, point_b);
         // test point on line segment
         let test_point = Point::zero();
-        assert!(line.is_on_line(test_point));
+        assert!(line.is_on_line(test_point) == true);
         // test point not on line segment
         let test_point = Point::new(1.0, -1.0);
-        assert!(!line.is_on_line(test_point));
+        assert!(line.is_on_line(test_point) == false);
         // test point on line, but not on line segment
         let test_point = Point::new(2.0, 2.0);
-        assert!(!line.is_on_line(test_point));
+        assert!(line.is_on_line(test_point) == false);
     }
     #[test]
     fn test_intersection() {

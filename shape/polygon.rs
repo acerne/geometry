@@ -5,6 +5,7 @@ pub struct Polygon {
     pub vertices: Vec<Point>,
 }
 
+#[allow(dead_code)]
 impl Polygon {
     pub fn new(vertices: &Vec<Point>) -> Self {
         let p = vertices.clone();
@@ -67,7 +68,7 @@ impl std::fmt::Display for Polygon {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Line, Point, Vector};
+    use crate::geometry::base::{Line, Point};
     use crate::geometry::shape::Polygon;
 
     #[test]

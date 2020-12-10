@@ -6,9 +6,13 @@ pub struct Size {
     pub h: f32,
 }
 
+#[allow(dead_code)]
 impl Size {
     pub fn new(w: f32, h: f32) -> Self {
         Self { w, h }
+    }
+    pub fn zero() -> Self {
+        Self { w: 0.0, h: 0.0 }
     }
     pub fn to_vector(&self) -> Vector {
         Vector::new(self.w, self.h)

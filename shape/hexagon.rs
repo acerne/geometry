@@ -28,10 +28,10 @@ impl Shape for Hexagon {
         self.center = self.center + vector;
     }
     fn move_to(&mut self, point: Point) {
-        self.center = point;
+        self.center = point.clone();
     }
     fn rotate(&mut self, theta: Angle) {
-        self.phi = self.phi + theta;
+        self.phi = self.phi + theta.clone();
     }
     fn rotate_to(&mut self, phi: Angle) {
         self.phi = phi;
