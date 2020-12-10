@@ -1,6 +1,6 @@
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Angle {
-    deg: f64,
+    pub deg: f64,
 }
 
 impl Angle {
@@ -80,6 +80,6 @@ impl PartialEq for Angle {
 
 impl std::fmt::Display for Angle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "({}°)", self.deg)
+        write!(f, "{}°", self.deg)
     }
 }

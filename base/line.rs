@@ -2,17 +2,17 @@ use crate::geometry::base::{Point, Vector};
 use crate::geometry::shape::{Circle, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
-pub struct LineSegment {
+pub struct Line {
     pub origin: Point,
     pub end: Point,
 }
 
-impl LineSegment {
+impl Line {
     pub fn new(origin: Point, end: Point) -> Self {
-        Self { origin, end }
+        Line { origin, end }
     }
     pub fn from_vector(point: Point, vector: Vector) -> Self {
-        Self {
+        Line {
             origin: point,
             end: point + vector,
         }
@@ -35,7 +35,7 @@ impl LineSegment {
         point.distance_to(self.origin) + point.distance_to(self.end)
             == self.origin.distance_to(self.end)
     }
-    pub fn intersection(&self, other: &LineSegment) -> Option<Point> {
+    pub fn intersection(&self, other: &Line) -> Option<Point> {
         let a1 = self.end.y - self.origin.y;
         let b1 = self.origin.x - self.end.x;
         let c1 = a1 * self.origin.x + b1 * self.origin.y;
@@ -105,14 +105,14 @@ impl LineSegment {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{LineSegment, Point, Vector};
+    use crate::geometry::base::{Line, Point, Vector};
 
     #[test]
     fn test_from_vector() {
         let point_a = Point::new(1.0, 1.0);
         let point_b = Point::new(-1.0, -1.0);
         let vector = Vector::from_points(point_a, point_b);
-        let line = LineSegment::from_vector(point_a, vector);
+        let line = Line::from_vector(point_a, vector);
         assert!(line.origin == point_a, "{} == {}", line.origin, point_a);
         assert!(line.end == point_b, "{} == {}", line.origin, point_b);
     }
@@ -120,7 +120,7 @@ mod tests {
     fn test_closest_point() {
         let point_a = Point::new(2.0, 0.0);
         let point_b = Point::new(0.0, 2.0);
-        let line = LineSegment::new(point_a, point_b);
+        let line = Line::new(point_a, point_b);
         // test middle of line segment
         let point = Point::new(2.0, 2.0);
         let result = line.closest_point(point);
@@ -141,7 +141,7 @@ mod tests {
     fn test_is_on_segment() {
         let point_a = Point::new(1.0, 1.0);
         let point_b = Point::new(-1.0, -1.0);
-        let line = LineSegment::new(point_a, point_b);
+        let line = Line::new(point_a, point_b);
         // test point on line segment
         let test_point = Point::zero();
         assert!(line.is_on_segment(test_point));
@@ -155,21 +155,21 @@ mod tests {
     #[test]
     fn test_intersection() {
         // test intersecting line segments
-        let line_a = LineSegment::new(Point::new(1.0, 1.0), Point::new(-1.0, -1.0));
-        let line_b = LineSegment::new(Point::new(1.0, -1.0), Point::new(-1.0, 1.0));
+        let line_a = Line::new(Point::new(1.0, 1.0), Point::new(-1.0, -1.0));
+        let line_b = Line::new(Point::new(1.0, -1.0), Point::new(-1.0, 1.0));
         let intersection = line_a.intersection(&line_b);
         assert!(!intersection.is_none());
         assert_eq!(intersection.unwrap(), Point::zero());
 
         // test parallel line segments
-        let line_a = LineSegment::new(Point::new(1.0, 1.0), Point::new(1.0, -1.0));
-        let line_b = LineSegment::new(Point::new(-1.0, 1.0), Point::new(-1.0, -1.0));
+        let line_a = Line::new(Point::new(1.0, 1.0), Point::new(1.0, -1.0));
+        let line_b = Line::new(Point::new(-1.0, 1.0), Point::new(-1.0, -1.0));
         let intersection = line_a.intersection(&line_b);
         assert!(intersection.is_none());
 
         // test intersecting lines, but not line segments
-        let line_a = LineSegment::new(Point::new(1.0, 1.0), Point::new(2.0, -1.0));
-        let line_b = LineSegment::new(Point::new(-1.0, 1.0), Point::new(-2.0, -1.0));
+        let line_a = Line::new(Point::new(1.0, 1.0), Point::new(2.0, -1.0));
+        let line_b = Line::new(Point::new(-1.0, 1.0), Point::new(-2.0, -1.0));
         let intersection = line_a.intersection(&line_b);
         assert!(intersection.is_none());
     }

@@ -1,4 +1,4 @@
-use crate::geometry::base::{Angle, LineSegment, Point, Vector};
+use crate::geometry::base::{Angle, Line, Point, Vector};
 use crate::geometry::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -62,7 +62,7 @@ impl Shape for Circle {
     fn contact_point(&self, origin: Point, direction: Vector) -> Option<Point> {
         let extended =
             direction.get_unit_vector() * (origin.distance_to(self.center) + self.radius);
-        let line = LineSegment::from_vector(origin, extended);
+        let line = Line::from_vector(origin, extended);
         let (ia, ib) = line.intersection_circle(self);
         if let Some(intersection_a) = ia {
             if let Some(intersection_b) = ib {

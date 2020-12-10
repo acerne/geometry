@@ -1,4 +1,4 @@
-use crate::geometry::base::{LineSegment, Point, Vector};
+use crate::geometry::base::{Line, Point, Vector};
 
 #[derive(Debug, Default, PartialEq)]
 pub struct Polygon {
@@ -18,13 +18,13 @@ impl Polygon {
         }
         Self { vertices }
     }
-    pub fn to_line_segments(&self) -> Vec<LineSegment> {
+    pub fn to_line_segments(&self) -> Vec<Line> {
         let mut lines = Vec::new();
         let n = self.vertices.len();
         for i in 0..(n - 1) {
-            lines.push(LineSegment::new(self.vertices[i], self.vertices[i + 1]));
+            lines.push(Line::new(self.vertices[i], self.vertices[i + 1]));
         }
-        lines.push(LineSegment::new(self.vertices[n - 1], self.vertices[0]));
+        lines.push(Line::new(self.vertices[n - 1], self.vertices[0]));
         lines
     }
     pub fn closest_point(&self, point: Point) -> Point {
@@ -55,7 +55,7 @@ impl std::fmt::Display for Polygon {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{LineSegment, Point, Vector};
+    use crate::geometry::base::{Line, Point, Vector};
     use crate::geometry::shape::Polygon;
 
     #[test]
@@ -66,9 +66,9 @@ mod tests {
         let points = vec![point_a, point_b, point_c];
         let poly = Polygon::new(&points);
         let lines = poly.to_line_segments();
-        let expected_ab = LineSegment::new(point_a, point_b);
-        let expected_bc = LineSegment::new(point_b, point_c);
-        let expected_ca = LineSegment::new(point_c, point_a);
+        let expected_ab = Line::new(point_a, point_b);
+        let expected_bc = Line::new(point_b, point_c);
+        let expected_ca = Line::new(point_c, point_a);
         assert_eq!(lines[0], expected_ab);
         assert_eq!(lines[1], expected_bc);
         assert_eq!(lines[2], expected_ca);

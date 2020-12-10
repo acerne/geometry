@@ -1,4 +1,4 @@
-use crate::geometry::base::{Angle, LineSegment, Point, Vector};
+use crate::geometry::base::{Angle, Line, Point, Vector};
 use crate::geometry::shape::Polygon;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -18,11 +18,12 @@ pub trait Shape {
     fn rotate_to(&mut self, phi: Angle);
     fn rotate_about(&mut self, point: Point, theta: Angle);
     fn to_polygon(&self) -> Polygon;
+    //fn to_bounding_box(&self) -> BoundingBox;
     fn closest_point(&self, point: Point) -> Point;
     fn contact_point(&self, origin: Point, direction: Vector) -> Option<Point> {
         let extended = direction.get_unit_vector()
             * (origin.distance_to(self.center()) + self.enclosing_radius());
-        let line = LineSegment::from_vector(origin, extended);
+        let line = Line::from_vector(origin, extended);
         let (ia, ib) = line.intersection_polygon(&self.to_polygon());
         if let Some(intersection_a) = ia {
             if let Some(intersection_b) = ib {

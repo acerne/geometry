@@ -1,4 +1,4 @@
-use crate::geometry::base::{Angle, LineSegment, Point, Scale, Size, Vector};
+use crate::geometry::base::{Angle, Line, Point, Scale, Size, Vector};
 use crate::geometry::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
