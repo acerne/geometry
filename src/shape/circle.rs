@@ -1,16 +1,57 @@
 use crate::base::{Angle, Line, Point, Vector};
 use crate::collision::BoundingBox;
-use crate::shape::{shape::*, Polygon};
+pub use crate::shape::shape::*;
+use crate::shape::Polygon;
+use std::cell::RefCell;
 
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct Circle {
-    pub center: Point,
-    pub radius: f32,
+    center: Point,
+    radius: f32,
+    _polygon: RefCell<Option<Polygon>>,
+    _bounding_box: RefCell<Option<BoundingBox>>,
 }
 
 impl Circle {
     pub fn new(center: Point, radius: f32) -> Self {
-        Self { center, radius }
+        Self {
+            center,
+            radius,
+            _polygon: RefCell::new(None),
+            _bounding_box: RefCell::new(None),
+        }
+    }
+    pub fn radius(&self) -> f32 {
+        self.radius
+    }
+    fn invalidate(&self) {
+        *self._polygon.borrow_mut() = None;
+        *self._polygon.borrow_mut() = None;
+    }
+    fn create_polygon(&self) {
+        // determine number of polygon vertices from radius
+        let n_vertices = 4 + (4.0 * self.radius.sqrt().floor()) as usize;
+        let mut vertices = Vec::new();
+        vertices.reserve(n_vertices);
+        let angle_step = (360.0 / n_vertices as f32).to_radians();
+        for i in 0..n_vertices {
+            vertices.push(
+                self.center
+                    + Vector::new(
+                        self.radius * ((i as f32) * angle_step).cos(),
+                        self.radius * ((i as f32) * angle_step).sin(),
+                    ),
+            )
+        }
+        *self._polygon.borrow_mut() = Some(Polygon { vertices });
+    }
+    fn create_bounding_box(&self) {
+        *self._bounding_box.borrow_mut() = Some(BoundingBox::new(
+            self.center().x - self.radius,
+            self.center().y + self.radius,
+            self.center().x - self.radius,
+            self.center().y + self.radius,
+        ));
     }
 }
 
@@ -26,9 +67,11 @@ impl Shape for Circle {
     }
     fn translate(&mut self, vector: Vector) {
         self.center = self.center + vector;
+        self.invalidate();
     }
     fn move_to(&mut self, point: Point) {
         self.center = point;
+        self.invalidate();
     }
     fn rotate(&mut self, _theta: Angle) {
         // does nothing
@@ -38,31 +81,19 @@ impl Shape for Circle {
     }
     fn rotate_about(&mut self, point: Point, theta: Angle) {
         self.center.rotate_about(point, theta);
+        self.invalidate();
     }
     fn polygon(&self) -> Polygon {
-        // determine number of polygon vertices from radius
-        let n_vertices = 4 + (4.0 * self.radius.sqrt().floor()) as usize;
-        let mut vertices = Vec::new();
-        vertices.reserve(n_vertices);
-        let angle_step = (360.0 / n_vertices as f32).to_radians();
-        for i in 0..n_vertices {
-            vertices.push(
-                self.center
-                    + Vector::new(
-                        self.radius * ((i as f32) * angle_step).cos(),
-                        self.radius * ((i as f32) * angle_step).sin(),
-                    ),
-            )
+        if *self._polygon.borrow() == None {
+            self.create_polygon();
         }
-        Polygon { vertices }
+        (*self._polygon.borrow()).clone().unwrap()
     }
     fn bounding_box(&self) -> BoundingBox {
-        BoundingBox::new(
-            self.center().x - self.radius,
-            self.center().y + self.radius,
-            self.center().x - self.radius,
-            self.center().y + self.radius,
-        )
+        if *self._bounding_box.borrow() == None {
+            self.create_polygon();
+        }
+        (*self._bounding_box.borrow()).clone().unwrap()
     }
     fn closest_point(&self, point: Point) -> Point {
         let v = Vector::from_points(self.center, point).get_unit_vector();

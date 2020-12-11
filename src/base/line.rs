@@ -1,5 +1,5 @@
 use crate::base::{Point, Vector};
-use crate::shape::{Circle, Polygon};
+use crate::shape::*;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Line {
@@ -56,11 +56,11 @@ impl Line {
     }
     pub fn intersection_circle(&self, circle: &Circle) -> (Option<Point>, Option<Point>) {
         let origin_to_end = self.to_vector();
-        let circle_to_origin = Vector::from_points(circle.center, self.origin);
+        let circle_to_origin = Vector::from_points(circle.center(), self.origin);
 
         let a = origin_to_end.dot(origin_to_end);
         let b = 2.0 * origin_to_end.dot(circle_to_origin);
-        let c = circle_to_origin.dot(circle_to_origin) - circle.radius.powf(2.0);
+        let c = circle_to_origin.dot(circle_to_origin) - circle.radius().powf(2.0);
 
         let det = b * b - 4.0 * a * c;
         if det == 0.0 {
