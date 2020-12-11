@@ -1,4 +1,4 @@
-use crate::geometry::base::{Scale, Vector};
+use crate::base::{Scale, Vector};
 
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Size {

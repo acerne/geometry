@@ -1,5 +1,5 @@
-use crate::geometry::base::{Point, Vector};
-use crate::geometry::shape::shape::*;
+use crate::base::{Point, Vector};
+use crate::shape::shape::*;
 
 pub fn are_close(shape_a: &dyn Shape, shape_b: &dyn Shape, margin: f32) -> bool {
     shape_a.center().distance_to(shape_b.center()) + margin

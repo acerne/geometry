@@ -1,4 +1,4 @@
-use crate::geometry::base::{Angle, Point, Scale, Size};
+use crate::base::{Angle, Point, Scale, Size};
 
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Vector {
@@ -168,7 +168,7 @@ impl std::fmt::Display for Vector {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Angle, Vector};
+    use crate::base::{Angle, Vector};
 
     #[test]
     fn test_normalize() {

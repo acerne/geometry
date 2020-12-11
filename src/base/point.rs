@@ -1,4 +1,4 @@
-use crate::geometry::base::{Angle, Vector};
+use crate::base::{Angle, Vector};
 
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Point {
@@ -131,7 +131,7 @@ impl std::fmt::Display for Point {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Angle, Point};
+    use crate::base::{Angle, Point};
 
     #[test]
     fn test_distance_to() {

@@ -1,5 +1,5 @@
-use crate::geometry::base::{Angle, Point, Vector};
-use crate::geometry::shape::{shape::*, Polygon};
+use crate::base::{Angle, Point, Vector};
+use crate::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Hexagon {
@@ -59,8 +59,8 @@ impl Shape for Hexagon {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Angle, Point, Vector};
-    use crate::geometry::shape::{shape::Shape, Hexagon};
+    use crate::base::{Angle, Point, Vector};
+    use crate::shape::{shape::Shape, Hexagon};
 
     #[test]
     fn test_translate() {

@@ -1,5 +1,5 @@
-use crate::geometry::base::{Point, Vector};
-use crate::geometry::shape::{Circle, Polygon};
+use crate::base::{Point, Vector};
+use crate::shape::{Circle, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Line {
@@ -105,7 +105,7 @@ impl Line {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Line, Point, Vector};
+    use crate::base::{Line, Point, Vector};
 
     #[test]
     fn test_from_vector() {

@@ -1,5 +1,5 @@
-use crate::geometry::base::{Angle, Line, Point, Vector};
-use crate::geometry::shape::Polygon;
+use crate::base::{Angle, Line, Point, Vector};
+use crate::shape::Polygon;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ShapeType {

@@ -1,5 +1,5 @@
-use crate::geometry::base::{Angle, Line, Point, Vector};
-use crate::geometry::shape::{shape::*, Polygon};
+use crate::base::{Angle, Line, Point, Vector};
+use crate::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Circle {
@@ -88,8 +88,8 @@ impl Shape for Circle {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Point, Vector};
-    use crate::geometry::shape::{shape::Shape, Circle};
+    use crate::base::{Point, Vector};
+    use crate::shape::{shape::Shape, Circle};
 
     #[test]
     fn test_translate() {

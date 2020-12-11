@@ -1,4 +1,4 @@
-use crate::geometry::base::Point;
+use crate::base::Point;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct BoundingBox {
@@ -99,7 +99,7 @@ impl BoundingBox {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::collision::BoundingBox;
+    use crate::collision::BoundingBox;
 
     #[test]
     fn test_distance() {

@@ -1,4 +1,4 @@
-use crate::geometry::base::Vector;
+use crate::base::Vector;
 
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Angle {

@@ -1,5 +1,5 @@
-use crate::geometry::base::{Angle, Point, Scale, Size, Vector};
-use crate::geometry::shape::{shape::*, Polygon};
+use crate::base::{Angle, Point, Scale, Size, Vector};
+use crate::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Rectangle {
@@ -69,8 +69,8 @@ impl Shape for Rectangle {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Angle, Point, Size, Vector};
-    use crate::geometry::shape::{shape::Shape, Rectangle};
+    use crate::base::{Angle, Point, Size, Vector};
+    use crate::shape::{shape::Shape, Rectangle};
 
     #[test]
     fn test_translate() {

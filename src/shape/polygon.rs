@@ -1,4 +1,4 @@
-use crate::geometry::base::{Angle, Line, Point, Vector};
+use crate::base::{Angle, Line, Point, Vector};
 
 #[derive(Debug, Default, PartialEq)]
 pub struct Polygon {
@@ -68,8 +68,8 @@ impl std::fmt::Display for Polygon {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::base::{Line, Point};
-    use crate::geometry::shape::Polygon;
+    use crate::base::{Line, Point};
+    use crate::shape::Polygon;
 
     #[test]
     fn test_to_lines() {
