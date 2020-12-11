@@ -13,5 +13,5 @@ float_eq = "0.5.0"
 criterion = "0.3.3"
 
 [[bench]]
-name = "collision_benchmark"
+name = "geometry_benchmark"
 harness = false

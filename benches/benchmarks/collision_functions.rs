@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{black_box, criterion_group, Criterion};
 use geometry::base::*;
 use geometry::collision::*;
 use geometry::shape::*;
@@ -39,9 +39,8 @@ pub fn hexagon_hexagon_collision_benchmark(c: &mut Criterion) {
 }
 
 criterion_group!(
-    benches,
+    collisions,
     circle_circle_collision_benchmark,
     hexagon_hexagon_collision_benchmark,
     rectangle_rectangle_collision_benchmark
 );
-criterion_main!(benches);
