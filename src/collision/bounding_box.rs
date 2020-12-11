@@ -37,20 +37,6 @@ impl BoundingBox {
     pub fn max_y2(&self, other: BoundingBox) -> f32 {
         self.y2.max(other.y2)
     }
-    // pub fn is_under(&self, point: Point) -> bool {
-    //     // Should I use screen coordinate system (x right, y down) or normal coordinate system (x right, y up)?
-    //     // From perspective of a game "is_above" must be as seen on display
-    //     point.x > self.x1 && point.x < self.x2 && point.y < self.y1
-    // }
-    // pub fn is_above(&self, point: Point) -> bool {
-    //     point.x > self.x1 && point.x < self.x2 && point.y > self.y2
-    // }
-    // pub fn is_left(&self, point: Point) -> bool {
-    //     point.y > self.y1 && point.y < self.y2 && point.x < self.x1
-    // }
-    // pub fn is_right(&self, point: Point) -> bool {
-    //     point.y > self.y1 && point.y < self.y2 && point.x > self.x2
-    // }
     pub fn is_inside(&self, point: Point) -> bool {
         point.x > self.x1 && point.x < self.x2 && point.y > self.y1 && point.y < self.y2
     }
