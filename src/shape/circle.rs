@@ -1,4 +1,5 @@
 use crate::base::{Angle, Line, Point, Vector};
+use crate::collision::BoundingBox;
 use crate::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -38,7 +39,7 @@ impl Shape for Circle {
     fn rotate_about(&mut self, point: Point, theta: Angle) {
         self.center.rotate_about(point, theta);
     }
-    fn to_polygon(&self) -> Polygon {
+    fn polygon(&self) -> Polygon {
         // determine number of polygon vertices from radius
         let n_vertices = 4 + (4.0 * self.radius.sqrt().floor()) as usize;
         let mut vertices = Vec::new();
@@ -54,6 +55,14 @@ impl Shape for Circle {
             )
         }
         Polygon { vertices }
+    }
+    fn bounding_box(&self) -> BoundingBox {
+        BoundingBox::new(
+            self.center().x - self.radius,
+            self.center().y + self.radius,
+            self.center().x - self.radius,
+            self.center().y + self.radius,
+        )
     }
     fn closest_point(&self, point: Point) -> Point {
         let v = Vector::from_points(self.center, point).get_unit_vector();
@@ -108,7 +117,7 @@ mod tests {
     #[test]
     fn test_to_polygon() {
         let circle = Circle::new(Point::new(10.0, -5.0), 10.0);
-        let poly = circle.to_polygon();
+        let poly = circle.polygon();
         let length = poly.vertices.len();
         assert!(length % 4 == 0);
         let vert_rightmost = Point::new(20.0, -5.0);

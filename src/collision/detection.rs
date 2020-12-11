@@ -7,8 +7,8 @@ pub fn are_close(shape_a: &dyn Shape, shape_b: &dyn Shape, margin: f32) -> bool 
 }
 pub fn distance_closest_points(shape_a: &dyn Shape, shape_b: &dyn Shape) -> (f32, Point, Point) {
     // TODO: optimize
-    let poly_a = shape_a.to_polygon();
-    let poly_b = shape_b.to_polygon();
+    let poly_a = shape_a.polygon();
+    let poly_b = shape_b.polygon();
     let mut best = std::f32::INFINITY;
     let mut best_point_a = Point::zero();
     let mut best_point_b = Point::zero();

@@ -1,6 +1,7 @@
 use crate::base::{Angle, Line, Point, Vector};
+use crate::collision::BoundingBox;
 
-#[derive(Debug, Default, PartialEq)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct Polygon {
     pub vertices: Vec<Point>,
 }
@@ -50,6 +51,27 @@ impl Polygon {
             angle_sum = angle_sum + angle;
         }
         float_eq::FloatEq::eq_abs(&angle_sum.deg, &360f64, &10e-3)
+    }
+    pub fn to_bounding_box(&self) -> BoundingBox {
+        let mut x_min = f32::INFINITY;
+        let mut x_max = -f32::INFINITY;
+        let mut y_min = f32::INFINITY;
+        let mut y_max = -f32::INFINITY;
+        for vertex in self.vertices.iter() {
+            if vertex.x < x_min {
+                x_min = vertex.x;
+            }
+            if vertex.x > x_max {
+                x_max = vertex.x;
+            }
+            if vertex.y < y_min {
+                y_min = vertex.y;
+            }
+            if vertex.y > y_max {
+                y_max = vertex.y;
+            }
+        }
+        BoundingBox::new(x_min, y_min, x_max, y_max)
     }
 }
 

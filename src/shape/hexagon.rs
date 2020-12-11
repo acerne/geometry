@@ -1,16 +1,44 @@
 use crate::base::{Angle, Point, Vector};
+use crate::collision::BoundingBox;
 use crate::shape::{shape::*, Polygon};
+use std::cell::RefCell;
 
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct Hexagon {
-    pub center: Point,
-    pub side: f32,
-    pub phi: Angle,
+    center: Point,
+    side: f32,
+    phi: Angle,
+    _polygon: RefCell<Option<Polygon>>,
+    _bounding_box: RefCell<Option<BoundingBox>>,
 }
 
 impl Hexagon {
     pub fn new(center: Point, side: f32, phi: Angle) -> Self {
-        Self { center, side, phi }
+        Self {
+            center,
+            side,
+            phi,
+            _polygon: RefCell::new(None),
+            _bounding_box: RefCell::new(None),
+        }
+    }
+    fn invalidate(&self) {
+        *self._polygon.borrow_mut() = None;
+        *self._polygon.borrow_mut() = None;
+    }
+    fn create_polygon(&self) {
+        let mut vertices = Vec::new();
+        vertices.reserve(6);
+        for i in 0..6 {
+            let theta = self.phi + Angle::new(i as f64 * 60f64);
+            let xh = self.center.x + (theta.cos() as f32) * self.side;
+            let yh = self.center.y + (theta.sin() as f32) * self.side;
+            vertices.push(Point::new(xh, yh));
+        }
+        *self._polygon.borrow_mut() = Some(Polygon { vertices });
+    }
+    fn create_bounding_box(&self) {
+        *self._bounding_box.borrow_mut() = Some(self.polygon().to_bounding_box());
     }
 }
 
@@ -26,33 +54,39 @@ impl Shape for Hexagon {
     }
     fn translate(&mut self, vector: Vector) {
         self.center = self.center + vector;
+        self.invalidate();
     }
     fn move_to(&mut self, point: Point) {
-        self.center = point.clone();
+        self.center = point;
+        self.invalidate();
     }
     fn rotate(&mut self, theta: Angle) {
-        self.phi = self.phi + theta.clone();
+        self.phi = self.phi + theta;
+        self.invalidate();
     }
     fn rotate_to(&mut self, phi: Angle) {
         self.phi = phi;
+        self.invalidate();
     }
     fn rotate_about(&mut self, point: Point, theta: Angle) {
         self.center.rotate_about(point, theta);
         self.phi = self.phi + theta;
+        self.invalidate();
     }
-    fn to_polygon(&self) -> Polygon {
-        let mut vertices = Vec::new();
-        vertices.reserve(6);
-        for i in 0..6 {
-            let theta = self.phi + Angle::new(i as f64 * 60f64);
-            let xh = self.center.x + (theta.cos() as f32) * self.side;
-            let yh = self.center.y + (theta.sin() as f32) * self.side;
-            vertices.push(Point::new(xh, yh));
+    fn polygon(&self) -> Polygon {
+        if *self._polygon.borrow() == None {
+            self.create_polygon();
         }
-        Polygon { vertices }
+        (*self._polygon.borrow()).clone().unwrap()
+    }
+    fn bounding_box(&self) -> BoundingBox {
+        if *self._bounding_box.borrow() == None {
+            self.create_polygon();
+        }
+        (*self._bounding_box.borrow()).clone().unwrap()
     }
     fn closest_point(&self, point: Point) -> Point {
-        let polygon = self.to_polygon();
+        let polygon = self.polygon();
         polygon.closest_point(point)
     }
 }
@@ -86,7 +120,7 @@ mod tests {
     #[test]
     fn test_to_polygon_flat_topped() {
         let hexagon = Hexagon::new(Point::new(10.0, -5.0), 2.0, Angle::zero());
-        let poly = hexagon.to_polygon();
+        let poly = hexagon.polygon();
         let vert_a = Point::new(12.0, -5.0);
         let vert_b = Point::new(11.0, -5.0 + 3.0f32.sqrt());
         let vert_c = Point::new(9.0, -5.0 + 3.0f32.sqrt());
@@ -113,7 +147,7 @@ mod tests {
     #[test]
     fn test_to_polygon_pointy_topped() {
         let hexagon = Hexagon::new(Point::new(10.0, -5.0), 2.0, Angle::new(90f64));
-        let poly = hexagon.to_polygon();
+        let poly = hexagon.polygon();
         let vert_a = Point::new(10.0, -3.0);
         let vert_b = Point::new(10.0 - 3.0f32.sqrt(), -4.0);
         let vert_c = Point::new(10.0 - 3.0f32.sqrt(), -6.0);

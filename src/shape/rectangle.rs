@@ -1,4 +1,5 @@
 use crate::base::{Angle, Point, Scale, Size, Vector};
+use crate::collision::BoundingBox;
 use crate::shape::{shape::*, Polygon};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -47,7 +48,7 @@ impl Shape for Rectangle {
         self.center.rotate_about(point, theta);
         self.phi = self.phi + theta;
     }
-    fn to_polygon(&self) -> Polygon {
+    fn polygon(&self) -> Polygon {
         let mut vertices = Vec::new();
         vertices.reserve(4);
         let half_size = self.size / 2.0;
@@ -61,8 +62,12 @@ impl Shape for Rectangle {
         vertices.push(self.center + Vector::new(-w_cos - h_sin, -w_sin + h_cos));
         Polygon { vertices }
     }
+    fn bounding_box(&self) -> BoundingBox {
+        let polygon = self.polygon();
+        polygon.to_bounding_box()
+    }
     fn closest_point(&self, point: Point) -> Point {
-        let polygon = self.to_polygon();
+        let polygon = self.polygon();
         polygon.closest_point(point)
     }
 }
@@ -119,7 +124,7 @@ mod tests {
     fn test_to_polygon_axis_aligned() {
         // test axis aligned rectangle
         let rect = Rectangle::new(Point::new(10.0, -5.0), Size::new(4.0, 2.0), Angle::zero());
-        let poly = rect.to_polygon();
+        let poly = rect.polygon();
         let vert_a = Point::new(8.0, -6.0);
         let vert_b = Point::new(12.0, -6.0);
         let vert_c = Point::new(12.0, -4.0);
@@ -145,7 +150,7 @@ mod tests {
             Size::new(4.0, 2.0),
             Angle::new(90f64),
         );
-        let poly = rect.to_polygon();
+        let poly = rect.polygon();
         let vert_a = Point::new(11.0, -7.0);
         let vert_b = Point::new(11.0, -3.0);
         let vert_c = Point::new(9.0, -3.0);
@@ -172,7 +177,7 @@ mod tests {
             Size::new(2.0 / 2f32.sqrt(), 2.0 / 2f32.sqrt()),
             Angle::new(45f64),
         );
-        let poly = rect.to_polygon();
+        let poly = rect.polygon();
         let vert_a = Point::new(10.0, -6.0);
         let vert_b = Point::new(11.0, -5.0);
         let vert_c = Point::new(10.0, -4.0);
