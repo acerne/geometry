@@ -23,6 +23,9 @@ impl Rectangle {
             _bounding_box: RefCell::new(None),
         }
     }
+    pub fn size(&self) -> Size {
+        self.size
+    }
     pub fn resize(&mut self, scale: Scale) {
         self.size = self.size * scale;
         self.invalidate();

@@ -49,7 +49,6 @@ pub trait Shape {
         }
         None
     }
-    //fn to_bounding_box(&self) -> Box;
     //fn to_enclosing_circle(&self) -> Circle;
     //fn center_of_gravity(&self) -> Point
 }
