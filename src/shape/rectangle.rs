@@ -26,6 +26,9 @@ impl Rectangle {
     pub fn size(&self) -> Size {
         self.size
     }
+    pub fn orientation(&self) -> Angle {
+        self.phi
+    }
     pub fn resize(&mut self, scale: Scale) {
         self.size = self.size * scale;
         self.invalidate();
