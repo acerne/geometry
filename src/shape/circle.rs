@@ -46,7 +46,7 @@ impl Circle {
         *self._polygon.borrow_mut() = Some(Polygon { vertices });
     }
     fn create_bounding_box(&self) {
-        *self._bounding_box.borrow_mut() = Some(BoundingBox::new(
+        *self._bounding_box.borrow_mut() = Some(BoundingBox::from_edges(
             self.center().x - self.radius,
             self.center().y + self.radius,
             self.center().x - self.radius,

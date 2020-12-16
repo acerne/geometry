@@ -26,6 +26,11 @@ impl Vector {
         let dy = magnitude * orientation.sin() as f32;
         Self { dx, dy }
     }
+    pub fn from_orientation(orientation: Angle) -> Self {
+        let dx = orientation.cos() as f32;
+        let dy = orientation.sin() as f32;
+        Self { dx, dy }
+    }
     pub fn normalize(&mut self) {
         let mag = self.magnitude();
         self.dx = self.dx / mag;

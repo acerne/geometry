@@ -71,7 +71,7 @@ impl Polygon {
                 y_max = vertex.y;
             }
         }
-        BoundingBox::new(x_min, y_min, x_max, y_max)
+        BoundingBox::from_edges(x_min, y_min, x_max, y_max)
     }
 }
 
