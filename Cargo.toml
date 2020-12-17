@@ -19,6 +19,3 @@ harness = false
 
 [lib]
 name = "geometry"
-
-[[example]]
-name = "collision_testing_initiative_point"
