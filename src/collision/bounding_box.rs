@@ -29,6 +29,12 @@ impl BoundingBox {
     pub fn y2(&self) -> f32 {
         self.center.y + self.half.h
     }
+    pub fn width(&self) -> f32 {
+        self.half.w * 2.0
+    }
+    pub fn height(&self) -> f32 {
+        self.half.h * 2.0
+    }
     pub fn min_x1(&self, other: BoundingBox) -> f32 {
         self.x1().min(other.x1())
     }
