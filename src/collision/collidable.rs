@@ -9,6 +9,16 @@ pub trait Collidable {
 
 impl Collidable for Ray {
     fn hit_point(&self, point: Point) -> Option<Hit> {
+        let dir = self.vector();
+        let closest = Line::from_vector(self.origin, dir).closest_point(point);
+        if closest.distance_to(point) < 1.0 {
+            return Some(Hit::new_time(
+                point,
+                dir.get_normal_vector(),
+                dir.get_normal_vector(),
+                self.origin.distance_to(point) / dir.magnitude(),
+            ));
+        }
         None
     }
     fn hit_bounding_box(&self, bounding_box: BoundingBox) -> Option<Hit> {
