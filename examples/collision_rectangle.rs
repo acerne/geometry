@@ -8,7 +8,7 @@ pub const SCREEN_SIZE: (f32, f32) = (800.0, 600.0);
 pub const ORIGIN: (f32, f32) = (SCREEN_SIZE.0 / 2.0, SCREEN_SIZE.1 / 2.0);
 
 struct GameState {
-    controlled_object: Ray,
+    controlled_object: Rectangle,
     static_box: BoundingBox,
     moving_box: BoundingBox,
     static_point: Point,
@@ -20,7 +20,11 @@ struct GameState {
 impl GameState {
     pub fn new() -> Self {
         Self {
-            controlled_object: Ray::new(Point::zero(), Angle::zero(), 200.0),
+            controlled_object: Rectangle::new(
+                Point::zero(),
+                Size::new(100.0, 50.0),
+                Angle::new(30.0),
+            ),
             static_box: BoundingBox::new(
                 Point::new(ORIGIN.0 + 200.0, ORIGIN.1 + 100.0),
                 Size::new(100.0, 50.0),
@@ -40,9 +44,7 @@ impl GameState {
 impl event::EventHandler for GameState {
     fn update(&mut self, ctx: &mut Context) -> GameResult {
         let mouse = input::mouse::position(ctx);
-        self.controlled_object.origin.x = mouse.x;
-        self.controlled_object.origin.y = mouse.y;
-
+        self.controlled_object.move_to(Point::new(mouse.x, mouse.y));
         self.moving_box.center.x += 1.0;
         if self.moving_box.center.x >= SCREEN_SIZE.0 {
             self.moving_box.center.x = 0.0
@@ -59,28 +61,22 @@ impl event::EventHandler for GameState {
         draw_bounding_box(ctx, self.moving_box, graphics::WHITE)?;
         draw_point(ctx, self.static_point, graphics::WHITE)?;
         if let Some(hit) = self.hit_static_box {
-            draw_ray(ctx, self.controlled_object, [1.0, 0.0, 0.0, 1.0].into())?;
-            if hit.time > 0.0 {
-                let mut hit_ray = self.controlled_object.clone();
-                hit_ray.length = hit_ray.length * hit.time;
-                draw_ray(ctx, hit_ray, [0.0, 1.0, 0.0, 1.0].into())?;
-            }
+            draw_rectangle(ctx, &self.controlled_object, [1.0, 0.0, 0.0, 1.0].into())?;
+            let mut contact = self.controlled_object.clone();
+            contact.translate(-hit.delta);
+            draw_rectangle(ctx, &contact, [0.0, 1.0, 0.0, 1.0].into())?;
         } else if let Some(hit) = self.hit_moving_box {
-            draw_ray(ctx, self.controlled_object, [1.0, 0.0, 0.0, 1.0].into())?;
-            if hit.time > 0.0 {
-                let mut hit_ray = self.controlled_object.clone();
-                hit_ray.length = hit_ray.length * hit.time;
-                draw_ray(ctx, hit_ray, [0.0, 1.0, 0.0, 1.0].into())?;
-            }
+            draw_rectangle(ctx, &self.controlled_object, [1.0, 0.0, 0.0, 1.0].into())?;
+            let mut contact = self.controlled_object.clone();
+            contact.translate(-hit.delta);
+            draw_rectangle(ctx, &contact, [0.0, 1.0, 0.0, 1.0].into())?;
         } else if let Some(hit) = self.hit_static_point {
-            draw_ray(ctx, self.controlled_object, [1.0, 0.0, 0.0, 1.0].into())?;
-            if hit.time > 0.0 {
-                let mut hit_ray = self.controlled_object.clone();
-                hit_ray.length = hit_ray.length * hit.time;
-                draw_ray(ctx, hit_ray, [0.0, 1.0, 0.0, 1.0].into())?;
-            }
+            draw_rectangle(ctx, &self.controlled_object, [1.0, 0.0, 0.0, 1.0].into())?;
+            let mut contact = self.controlled_object.clone();
+            contact.translate(-hit.delta);
+            draw_rectangle(ctx, &contact, [0.0, 1.0, 0.0, 1.0].into())?;
         } else {
-            draw_ray(ctx, self.controlled_object, [0.0, 1.0, 0.0, 1.0].into())?;
+            draw_rectangle(ctx, &self.controlled_object, [0.0, 1.0, 0.0, 1.0].into())?;
         }
         graphics::present(ctx)?;
         Ok(())
@@ -92,7 +88,8 @@ impl event::EventHandler for GameState {
         _x: f32,
         _y: f32,
     ) {
-        self.controlled_object.direction = Angle::new(self.controlled_object.direction.deg + 30f64);
+        self.controlled_object
+            .rotate_to(Angle::new(self.controlled_object.orientation().deg + 30f64));
     }
 }
 

@@ -97,7 +97,7 @@ fn draw_rectangle(ctx: &mut Context, rectangle: &Rectangle, color: graphics::Col
         vertices[idx].x = vertex.x;
         vertices[idx].y = vertex.y;
     }
-    let mesh = graphics::Mesh::new_polygon(ctx, graphics::DrawMode::fill(), &vertices, color)?;
+    let mesh = graphics::Mesh::new_polygon(ctx, graphics::DrawMode::stroke(3.0), &vertices, color)?;
     graphics::draw(ctx, &mesh, (ggez::mint::Point2 { x: 0.0, y: 0.0 },))?;
     Ok(())
 }
