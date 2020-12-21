@@ -7,6 +7,7 @@ pub struct Hit {
     pub position: Point,
     pub normal: Vector,
     pub delta: Vector,
+    pub time: f32,
 }
 
 impl Hit {
@@ -15,6 +16,15 @@ impl Hit {
             position,
             normal,
             delta,
+            time: 0.0,
+        }
+    }
+    pub fn new_time(position: Point, normal: Vector, delta: Vector, time: f32) -> Self {
+        Self {
+            position,
+            normal,
+            delta,
+            time,
         }
     }
     pub fn zero() -> Self {
@@ -22,6 +32,7 @@ impl Hit {
             position: Point::zero(),
             normal: Vector::zero(),
             delta: Vector::zero(),
+            time: 0.0,
         }
     }
 }
