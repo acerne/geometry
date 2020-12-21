@@ -109,8 +109,8 @@ impl event::EventHandler for GameState {
 }
 
 fn main() -> GameResult {
-    let (ctx, events_loop) = &mut ggez::ContextBuilder::new("hexpong", "acerne")
-        .window_setup(ggez::conf::WindowSetup::default().title("HexPong"))
+    let (ctx, events_loop) = &mut ggez::ContextBuilder::new("test", "acerne")
+        .window_setup(ggez::conf::WindowSetup::default().title("test"))
         .window_mode(ggez::conf::WindowMode::default().dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
         .build()?;
 
