@@ -51,6 +51,7 @@ impl Polygon {
             angle_sum = angle_sum + angle;
         }
         float_eq::FloatEq::eq_abs(&angle_sum.deg, &360f64, &10e-3)
+            || float_eq::FloatEq::eq_abs(&angle_sum.deg, &0f64, &10e-3)
     }
     pub fn to_bounding_box(&self) -> BoundingBox {
         let mut x_min = f32::INFINITY;
