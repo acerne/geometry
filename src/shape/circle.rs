@@ -24,6 +24,9 @@ impl Circle {
     pub fn radius(&self) -> f32 {
         self.radius
     }
+    pub fn is_inslide(&self, point: Point) -> bool {
+        self.center.distance_to(point) < self.radius
+    }
     fn invalidate(&self) {
         *self._polygon.borrow_mut() = None;
         *self._polygon.borrow_mut() = None;

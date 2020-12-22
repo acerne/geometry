@@ -1,5 +1,6 @@
 use crate::base::*;
 use crate::collision::*;
+use crate::shape::*;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct BoundingBox {
@@ -58,6 +59,15 @@ impl BoundingBox {
     }
     pub fn max_y2(&self, other: BoundingBox) -> f32 {
         self.y2().max(other.y2())
+    }
+    pub fn polygon(&self) -> Polygon {
+        let mut vertices = Vec::new();
+        vertices.reserve(4);
+        vertices.push(self.center + Vector::new(-self.half.w, self.half.h));
+        vertices.push(self.center + Vector::new(self.half.w, self.half.h));
+        vertices.push(self.center + Vector::new(self.half.w, -self.half.h));
+        vertices.push(self.center + Vector::new(-self.half.w, -self.half.h));
+        Polygon { vertices }
     }
     pub fn is_inside(&self, point: Point) -> bool {
         point.x > self.x1() && point.x < self.x2() && point.y > self.y1() && point.y < self.y2()

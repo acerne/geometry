@@ -74,6 +74,18 @@ impl Polygon {
         }
         BoundingBox::from_edges(x_min, y_min, x_max, y_max)
     }
+    pub fn vertices_inside(&self, other: &Polygon) -> Option<Vec<usize>> {
+        let mut indices = Vec::new();
+        for (idx, &vertex) in other.vertices.iter().enumerate() {
+            if self.is_inside(vertex) {
+                indices.push(idx);
+            }
+        }
+        if indices.len() > 0 {
+            return Some(indices);
+        }
+        None
+    }
 }
 
 impl std::fmt::Display for Polygon {

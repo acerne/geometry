@@ -4,24 +4,24 @@ use crate::shape::*;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Hit {
-    pub position: Point,
+    pub contact: Point,
     pub normal: Vector,
     pub delta: Vector,
     pub time: f32,
 }
 
 impl Hit {
-    pub fn new(position: Point, normal: Vector, delta: Vector) -> Self {
+    pub fn new(contact: Point, normal: Vector, delta: Vector) -> Self {
         Self {
-            position,
+            contact,
             normal,
             delta,
             time: 0.0,
         }
     }
-    pub fn new_time(position: Point, normal: Vector, delta: Vector, time: f32) -> Self {
+    pub fn new_time(contact: Point, normal: Vector, delta: Vector, time: f32) -> Self {
         Self {
-            position,
+            contact,
             normal,
             delta,
             time,
@@ -29,7 +29,7 @@ impl Hit {
     }
     pub fn zero() -> Self {
         Self {
-            position: Point::zero(),
+            contact: Point::zero(),
             normal: Vector::zero(),
             delta: Vector::zero(),
             time: 0.0,
