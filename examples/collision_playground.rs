@@ -28,6 +28,7 @@ pub const MOVING_POS: Point = Point {
 pub enum ObjectShape {
     Point,
     BoundingBox,
+    Rectangle,
     Circle,
     Ray,
 }
@@ -36,6 +37,7 @@ pub struct Object {
     circle: Circle,
     point: Point,
     bounding_box: BoundingBox,
+    rectangle: Rectangle,
     ray: Ray,
 }
 impl Object {
@@ -44,22 +46,26 @@ impl Object {
             circle: Circle::new(Point::zero(), 0.0),
             point: Point::zero(),
             bounding_box: BoundingBox::new(Point::zero(), Size::zero()),
+            rectangle: Rectangle::new(Point::zero(), Size::zero(), Angle::zero()),
             ray: Ray::new(Point::zero(), Angle::zero(), 0.0),
         }
     }
     fn rotate(&mut self, angle: Angle) {
         self.ray.direction = self.ray.direction + angle;
+        self.rectangle.rotate(angle);
     }
     fn translate(&mut self, translation: Vector) {
         self.point = self.point + translation;
         self.circle.move_to(self.point);
         self.bounding_box.center = self.point;
+        self.rectangle.move_to(self.point);
         self.ray.origin = self.point;
     }
     fn move_to(&mut self, location: Point) {
         self.point = location;
         self.circle.move_to(location);
         self.bounding_box.center = location;
+        self.rectangle.move_to(location);
         self.ray.origin = location;
     }
     fn hit(
@@ -79,6 +85,26 @@ impl Object {
                 ObjectShape::BoundingBox => {
                     return self.bounding_box.hit_bounding_box(other.bounding_box);
                 }
+                ObjectShape::Rectangle => {
+                    return None; //self.bounding_box.hit_rectangle(other.bounding_box);
+                }
+                ObjectShape::Ray => {
+                    return None;
+                }
+            },
+            ObjectShape::Rectangle => match other_shape {
+                ObjectShape::Point => {
+                    return self.rectangle.hit_point(other.point);
+                }
+                ObjectShape::Circle => {
+                    return self.rectangle.hit_circle(&other.circle);
+                }
+                ObjectShape::BoundingBox => {
+                    return self.rectangle.hit_bounding_box(other.bounding_box);
+                }
+                ObjectShape::Rectangle => {
+                    return None; //self.rectangle.hit_rectangle(other.bounding_box);
+                }
                 ObjectShape::Ray => {
                     return None;
                 }
@@ -93,6 +119,9 @@ impl Object {
                 ObjectShape::BoundingBox => {
                     return self.ray.hit_bounding_box(other.bounding_box);
                 }
+                ObjectShape::Rectangle => {
+                    return None; //self.ray.hit_rectangle(other.bounding_box);
+                }
                 ObjectShape::Ray => {
                     return None;
                 }
@@ -106,6 +135,9 @@ impl Object {
                 }
                 ObjectShape::BoundingBox => {
                     return self.circle.hit_bounding_box(other.bounding_box);
+                }
+                ObjectShape::Rectangle => {
+                    return None; //self.circle.hit_rectangle(other.bounding_box);
                 }
                 ObjectShape::Ray => {
                     return None;
@@ -166,6 +198,17 @@ impl GameState {
         self.rotating_object.bounding_box = BoundingBox::new(ROTATING_POS, Size::new(50.0, 50.0));
         self.moving_object.bounding_box = BoundingBox::new(MOVING_POS, Size::new(50.0, 50.0));
 
+        self.controlled_object.rectangle =
+            Rectangle::new(Point::zero(), Size::new(50.0, 20.0) * 2.0, Angle::zero());
+        self.small_object.rectangle =
+            Rectangle::new(SMALL_POS, Size::new(20.0, 10.0) * 2.0, Angle::zero());
+        self.large_object.rectangle =
+            Rectangle::new(LARGE_POS, Size::new(100.0, 30.0) * 2.0, Angle::zero());
+        self.rotating_object.rectangle =
+            Rectangle::new(ROTATING_POS, Size::new(50.0, 50.0) * 2.0, Angle::zero());
+        self.moving_object.rectangle =
+            Rectangle::new(MOVING_POS, Size::new(50.0, 50.0) * 2.0, Angle::zero());
+
         self.controlled_object.ray = Ray::new(Point::zero(), Angle::zero(), 50.0);
         self.small_object.ray = Ray::new(SMALL_POS, Angle::zero(), 20.0);
         self.large_object.ray = Ray::new(LARGE_POS, Angle::new(180.0), 100.0);
@@ -223,20 +266,20 @@ impl event::EventHandler for GameState {
         draw_object(ctx, &self.moving_object, self.object_shape, graphics::WHITE)?;
 
         if let Some(hit) = self.hit_small {
-            draw_hit_object(ctx, &self.controlled_object, self.controlled_shape, hit);
+            draw_hit_object(ctx, &self.controlled_object, self.controlled_shape, hit)?;
         } else if let Some(hit) = self.hit_large {
-            draw_hit_object(ctx, &self.controlled_object, self.controlled_shape, hit);
+            draw_hit_object(ctx, &self.controlled_object, self.controlled_shape, hit)?;
         } else if let Some(hit) = self.hit_rotating {
-            draw_hit_object(ctx, &self.controlled_object, self.controlled_shape, hit);
+            draw_hit_object(ctx, &self.controlled_object, self.controlled_shape, hit)?;
         } else if let Some(hit) = self.hit_moving {
-            draw_hit_object(ctx, &self.controlled_object, self.controlled_shape, hit);
+            draw_hit_object(ctx, &self.controlled_object, self.controlled_shape, hit)?;
         } else {
             draw_object(
                 ctx,
                 &self.controlled_object,
                 self.controlled_shape,
                 [0.0, 0.0, 1.0, 1.0].into(),
-            );
+            )?;
         }
         graphics::present(ctx)?;
         Ok(())
@@ -252,6 +295,9 @@ impl event::EventHandler for GameState {
                         self.object_shape = ObjectShape::BoundingBox;
                     }
                     ObjectShape::BoundingBox => {
+                        self.object_shape = ObjectShape::Rectangle;
+                    }
+                    ObjectShape::Rectangle => {
                         self.object_shape = ObjectShape::Ray;
                     }
                     ObjectShape::Ray => {
@@ -269,6 +315,9 @@ impl event::EventHandler for GameState {
                         self.controlled_shape = ObjectShape::BoundingBox;
                     }
                     ObjectShape::BoundingBox => {
+                        self.controlled_shape = ObjectShape::Rectangle;
+                    }
+                    ObjectShape::Rectangle => {
                         self.controlled_shape = ObjectShape::Ray;
                     }
                     ObjectShape::Ray => {
@@ -441,6 +490,12 @@ pub fn draw_hit_object(
             adjusted.center = adjusted.center + hit.delta;
             draw_bounding_box(ctx, adjusted, [0.0, 1.0, 0.0, 1.0].into())?;
         }
+        ObjectShape::Rectangle => {
+            draw_rectangle(ctx, &object.rectangle, [1.0, 0.0, 0.0, 1.0].into())?;
+            let mut adjusted = object.rectangle.clone();
+            adjusted.translate(hit.delta);
+            draw_rectangle(ctx, &adjusted, [0.0, 1.0, 0.0, 1.0].into())?;
+        }
         ObjectShape::Ray => {
             draw_ray(ctx, object.ray, [1.0, 0.0, 0.0, 1.0].into())?;
             if hit.time > 0.0 {
@@ -468,6 +523,9 @@ pub fn draw_object(
         }
         ObjectShape::BoundingBox => {
             draw_bounding_box(ctx, object.bounding_box, color)?;
+        }
+        ObjectShape::Rectangle => {
+            draw_rectangle(ctx, &object.rectangle, color)?;
         }
         ObjectShape::Ray => {
             draw_ray(ctx, object.ray, color)?;
