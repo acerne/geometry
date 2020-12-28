@@ -148,43 +148,43 @@ impl Collidable for BoundingBox {
     }
     fn hit_circle(&self, circle: &Circle) -> Option<Hit> {
         let dist = Vector::from_points(circle.center(), self.center);
-        if dist.dx.abs() > self.half.w + circle.radius()
-            || dist.dy.abs() > self.half.h + circle.radius()
+        if dist.dx.abs() <= self.half.w + circle.radius()
+            && dist.dy.abs() <= self.half.h + circle.radius()
         {
-            return None;
-        }
-        if dist.dy.abs() < dist.dx.abs() && dist.dy.abs() < self.half.h {
-            // box is on top/bottom the circle
-            let sign_x = dist.dx.signum();
-            let adjust = Vector::new(sign_x * circle.radius(), 0.0);
-            let delta = adjust + Vector::new(self.half.w * sign_x - dist.dx, 0.0);
-            return Some(Hit::new(
-                circle.center() + adjust,
-                Vector::new(sign_x, 0.0),
-                delta,
-            ));
-        } else if dist.dx.abs() < self.half.w {
-            // box is on the left/right side the circle
-            let sign_y = dist.dy.signum();
-            let adjust = Vector::new(0.0, sign_y * circle.radius());
-            let delta = adjust + Vector::new(0.0, self.half.h * sign_y - dist.dy);
-            return Some(Hit::new(
-                circle.center() + adjust,
-                Vector::new(0.0, sign_y),
-                delta,
-            ));
-        }
-        let most_sunken_vertex = self.polygon().closest_point(circle.center());
-        let vertex_dist = Vector::from_points(circle.center(), most_sunken_vertex);
-        if vertex_dist.magnitude() < circle.radius() {
-            // most sunken vertex must be pushed out
-            let adjust = vertex_dist.get_unit_vector() * circle.radius();
-            let delta = adjust - vertex_dist;
-            return Some(Hit::new(
-                circle.center() + adjust,
-                delta.get_unit_vector(),
-                delta,
-            ));
+            // possible collision
+            if dist.dy.abs() < dist.dx.abs() && dist.dy.abs() < self.half.h {
+                // box is on the left/right side the circle
+                let sign_x = dist.dx.signum();
+                let adjust = Vector::new(sign_x * circle.radius(), 0.0);
+                let delta = adjust + Vector::new(self.half.w * sign_x - dist.dx, 0.0);
+                return Some(Hit::new(
+                    circle.center() + adjust,
+                    Vector::new(sign_x, 0.0),
+                    delta,
+                ));
+            } else if dist.dx.abs() < self.half.w {
+                // box is on top/bottom the circle
+                let sign_y = dist.dy.signum();
+                let adjust = Vector::new(0.0, sign_y * circle.radius());
+                let delta = adjust + Vector::new(0.0, self.half.h * sign_y - dist.dy);
+                return Some(Hit::new(
+                    circle.center() + adjust,
+                    Vector::new(0.0, sign_y),
+                    delta,
+                ));
+            }
+            let deepest_vertex = self.polygon().closest_point(circle.center());
+            let vertex_dist = Vector::from_points(circle.center(), deepest_vertex);
+            if vertex_dist.magnitude() < circle.radius() {
+                // deepest vertex must be pushed out
+                let adjust = vertex_dist.get_unit_vector() * circle.radius();
+                let delta = adjust - vertex_dist;
+                return Some(Hit::new(
+                    circle.center() + adjust,
+                    delta.get_unit_vector(),
+                    delta,
+                ));
+            }
         }
         None
     }
@@ -204,6 +204,61 @@ impl Collidable for Circle {
         None
     }
     fn hit_bounding_box(&self, bounding_box: BoundingBox) -> Option<Hit> {
+        let dist = Vector::from_points(bounding_box.center, self.center());
+        if dist.dx.abs() <= bounding_box.half.w + self.radius()
+            && dist.dy.abs() <= bounding_box.half.h + self.radius()
+        {
+            // possible collision
+            if dist.dy.abs() <= bounding_box.half.h && dist.dx.abs() < bounding_box.half.w {
+                // circle center is inside the box, select closest
+                let sign_x = dist.dx.signum();
+                let sign_y = dist.dy.signum();
+                let adjust_x = Vector::new(sign_x * bounding_box.half.w, 0.0);
+                let adjust_y = Vector::new(0.0, sign_y * bounding_box.half.h);
+                let delta_x = adjust_x + Vector::new(self.radius() * sign_x - dist.dx, 0.0);
+                let delta_y = adjust_y + Vector::new(0.0, self.radius() * sign_y - dist.dy);
+                if delta_x.magnitude() < delta_y.magnitude() {
+                    return Some(Hit::new(
+                        Point::new(bounding_box.center.x, self.center().y) + adjust_x,
+                        Vector::new(sign_x, 0.0),
+                        delta_x,
+                    ));
+                } else {
+                    return Some(Hit::new(
+                        Point::new(self.center().x, bounding_box.center.y) + adjust_y,
+                        Vector::new(0.0, sign_y),
+                        delta_y,
+                    ));
+                }
+            } else if dist.dy.abs() <= bounding_box.half.h {
+                // circle is on the left/right side the box
+                let sign_x = dist.dx.signum();
+                let adjust = Vector::new(sign_x * bounding_box.half.w, 0.0);
+                let delta = adjust + Vector::new(self.radius() * sign_x - dist.dx, 0.0);
+                return Some(Hit::new(
+                    Point::new(bounding_box.center.x, self.center().y) + adjust,
+                    Vector::new(sign_x, 0.0),
+                    delta,
+                ));
+            } else if dist.dx.abs() < bounding_box.half.w {
+                // circle is on top/bottom the box
+                let sign_y = dist.dy.signum();
+                let adjust = Vector::new(0.0, sign_y * bounding_box.half.h);
+                let delta = adjust + Vector::new(0.0, self.radius() * sign_y - dist.dy);
+                return Some(Hit::new(
+                    Point::new(self.center().x, bounding_box.center.y) + adjust,
+                    Vector::new(0.0, sign_y),
+                    delta,
+                ));
+            }
+            let deepest_vertex = bounding_box.polygon().closest_point(self.center());
+            let vertex_dist = Vector::from_points(deepest_vertex, self.center());
+            if vertex_dist.magnitude() < self.radius() {
+                // pushed out by the deepest vertex
+                let delta = vertex_dist.get_unit_vector() * self.radius() - vertex_dist;
+                return Some(Hit::new(deepest_vertex, delta.get_unit_vector(), delta));
+            }
+        }
         None
     }
     fn hit_circle(&self, circle: &Circle) -> Option<Hit> {
