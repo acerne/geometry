@@ -207,6 +207,16 @@ impl Collidable for Circle {
         None
     }
     fn hit_circle(&self, circle: &Circle) -> Option<Hit> {
+        let dist = Vector::from_points(circle.center(), self.center());
+        if dist.magnitude() <= circle.radius() + self.radius() {
+            let normal = dist.get_unit_vector();
+            let contact = circle.center() + normal * circle.radius();
+            return Some(Hit::new(
+                contact,
+                normal,
+                normal * (circle.radius() + self.radius() - dist.magnitude()),
+            ));
+        }
         None
     }
 }
