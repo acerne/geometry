@@ -190,6 +190,27 @@ impl Collidable for BoundingBox {
     }
 }
 
+impl Collidable for Circle {
+    fn hit_point(&self, point: Point) -> Option<Hit> {
+        let dist = Vector::from_points(point, self.center());
+        if dist.magnitude() <= self.radius() {
+            let normal = dist.get_unit_vector();
+            return Some(Hit::new(
+                point,
+                normal,
+                normal * (self.radius() - dist.magnitude()),
+            ));
+        }
+        None
+    }
+    fn hit_bounding_box(&self, bounding_box: BoundingBox) -> Option<Hit> {
+        None
+    }
+    fn hit_circle(&self, circle: &Circle) -> Option<Hit> {
+        None
+    }
+}
+
 impl Collidable for Rectangle {
     fn hit_point(&self, point: Point) -> Option<Hit> {
         if self.polygon().is_inside(point) {

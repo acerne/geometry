@@ -97,6 +97,20 @@ impl Object {
                     return None;
                 }
             },
+            ObjectShape::Circle => match other_shape {
+                ObjectShape::Point => {
+                    return self.circle.hit_point(other.point);
+                }
+                ObjectShape::Circle => {
+                    return self.circle.hit_circle(&other.circle);
+                }
+                ObjectShape::BoundingBox => {
+                    return self.circle.hit_bounding_box(other.bounding_box);
+                }
+                ObjectShape::Ray => {
+                    return None;
+                }
+            },
             _ => None,
         }
     }
