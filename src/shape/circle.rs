@@ -29,7 +29,7 @@ impl Circle {
     }
     fn invalidate(&self) {
         *self._polygon.borrow_mut() = None;
-        *self._polygon.borrow_mut() = None;
+        *self._bounding_box.borrow_mut() = None;
     }
     fn create_polygon(&self) {
         // determine number of polygon vertices from radius
@@ -94,7 +94,7 @@ impl Shape for Circle {
     }
     fn bounding_box(&self) -> BoundingBox {
         if *self._bounding_box.borrow() == None {
-            self.create_polygon();
+            self.create_bounding_box();
         }
         (*self._bounding_box.borrow()).clone().unwrap()
     }

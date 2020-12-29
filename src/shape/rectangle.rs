@@ -39,7 +39,7 @@ impl Rectangle {
     }
     fn invalidate(&self) {
         *self._polygon.borrow_mut() = None;
-        *self._polygon.borrow_mut() = None;
+        *self._bounding_box.borrow_mut() = None;
     }
     fn create_polygon(&self) {
         let mut vertices = Vec::new();
@@ -99,7 +99,7 @@ impl Shape for Rectangle {
     }
     fn bounding_box(&self) -> BoundingBox {
         if *self._bounding_box.borrow() == None {
-            self.create_polygon();
+            self.create_bounding_box();
         }
         (*self._bounding_box.borrow()).clone().unwrap()
     }
